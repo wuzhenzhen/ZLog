@@ -54,10 +54,10 @@ makeJar.dependsOn(deleteBuild, build)
 
 //添加
 publish {
-    userOrg = 'shed'//bintray.com用户名
-    groupId = 'com.kgd.tools'//jcenter上的路径
-    artifactId = 'ZLog'//项目名称
-    publishVersion = '1.0.0'//版本号
-    desc = 'Oh hi, this is a android log tools'//描述，不重要
-    website = 'https://github.com/wuzhenzhen/ZLog'//网站，不重要
+    userOrg = 'shed'
+    groupId = 'com.kgd.tools'
+    artifactId = 'ZLog'
+    publishVersion = '1.0.1'
+    desc = 'this is a android log tools'
+    website = 'https://github.com/wuzhenzhen/ZLog'
 }
