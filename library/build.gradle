@@ -2,8 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'//添加
 android {
     compileSdkVersion 28
-//    57fedcb1d935980f51e788f46f04fc98ed99ab14
-    //gradlew clean build bintrayUpload -PbintrayUser=shed  -PbintrayKey=57fedcb1d935980f51e788f46f04fc98ed99ab14 -PdryRun=false
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
