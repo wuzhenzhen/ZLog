@@ -848,6 +848,8 @@ public class ZLog {
                         .append(" ")
                         .append(fileName)
                         .append(":")
+                        .append(methodName)
+                        .append("#")
                         .append(lineNumber)
                         .append(" ");
                 if (objectMsg == null) {
