@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.github.library.flow.ZFlow;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,6 +139,7 @@ public class ZLog {
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
         initialize(context, defaultConfig());
+        ZFlow.initialize(context.getApplicationContext());
     }
 
     /**

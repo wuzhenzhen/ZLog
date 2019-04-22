@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'//添加
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -22,6 +23,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.github.library.flow.greendao'
+        targetGenDir 'src/main/java'
+    }
 }
 
 dependencies {
@@ -30,6 +37,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //  https://github.com/greenrobot/greenDAO
+    implementation 'org.greenrobot:greendao:3.2.2' // add library
 }
 
 def _BASENAME = "ZLog";
