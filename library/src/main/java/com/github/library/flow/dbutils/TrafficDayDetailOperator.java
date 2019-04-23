@@ -24,15 +24,28 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
     }
 
     //
-    public List<TrafficDayDetail> queryByStartTime(long startTime) {
+    public TrafficDayDetail queryByStartTime(long startTime, String packageName) {
         QueryBuilder<TrafficDayDetail> queryBuilder =
                 getDaoSession().getTrafficDayDetailDao().queryBuilder();
         List<TrafficDayDetail> entityAngleRaws = queryBuilder
-                .where(TrafficDayDetailDao.Properties.StartTime.eq(startTime))
-                .orderAsc(TrafficDayDetailDao.Properties.StartTime)
+                .where(TrafficDayDetailDao.Properties.StartTime.eq(startTime), TrafficDayDetailDao.Properties.PackageName.eq(packageName))
+                .orderAsc(TrafficDayDetailDao.Properties.LastTime)
                 .list();
         if (entityAngleRaws != null && entityAngleRaws.size() > 0){
-            return  entityAngleRaws;
+            return  entityAngleRaws.get(0);
+        }
+        return null;
+    }
+
+    //获取最后插入的一条数据
+    public TrafficDayDetail queryByLastTime() {
+        QueryBuilder<TrafficDayDetail> queryBuilder =
+                getDaoSession().getTrafficDayDetailDao().queryBuilder();
+        List<TrafficDayDetail> entityAngleRaws = queryBuilder
+                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
+                .list();
+        if (entityAngleRaws != null && entityAngleRaws.size() > 0){
+            return  entityAngleRaws.get(0);
         }
         return null;
     }

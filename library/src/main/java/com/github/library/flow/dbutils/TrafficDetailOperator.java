@@ -1,8 +1,6 @@
 package com.github.library.flow.dbutils;
 
-import com.github.library.flow.entity.Demo;
 import com.github.library.flow.entity.TrafficDetail;
-import com.github.library.flow.greendao.DemoDao;
 import com.github.library.flow.greendao.TrafficDetailDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;

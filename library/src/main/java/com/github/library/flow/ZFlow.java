@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 
 import com.github.library.ZLog;
 import com.github.library.flow.dbutils.DaoUtils;
+import com.github.library.flow.entity.TrafficDayDetail;
 import com.github.library.flow.entity.TrafficDetail;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class ZFlow {
     public static final String TAG = "ZFlow";
     //Application Context 防止内存泄露
     private static Context mContext;
-    private final static long startTime =  System.currentTimeMillis(); //开机时间
+    private static long startTime =  System.currentTimeMillis(); //开机时间
 
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
@@ -69,9 +71,59 @@ public class ZFlow {
                                             td.setTotalRX(totalRX);
                                             td.setTotalTX(totalTX);
                                             td.setTotal(total);
-                                            td.setLastTime(System.currentTimeMillis());
+                                            td.setLastTime(lastTime);
                                             ZLog.ddd("--traffic--"+td.toString());
+                                            // 保存详细流量数据
                                             DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
+
+                                            //更新 startTime(开机时间)  到现在的流量
+                                            TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime();
+                                            if(tdd == null){  //一条数据也没有
+                                                tdd = new TrafficDayDetail();
+                                                tdd.setStartTime(startTime);
+                                                tdd.setRx(totalRX);
+                                                tdd.setTx(totalTX);
+                                                tdd.setTotal(total);
+                                                tdd.setLastTime(System.currentTimeMillis());
+                                                DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                                            }else{
+                                                String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录
+                                                String startTimeYMD = getYMDFromLong(startTime);  //开机时间
+                                                String nowYMD = getYMDFromLong(System.currentTimeMillis()); //现在时间
+                                                if(lastYMD.equals(startTimeYMD) && lastYMD.equals(nowYMD)){  //同一天
+                                                    if(startTime == tdd.getStartTime()){ //此记录已存在, 且startTime 一样
+                                                        //继续更新数据
+                                                        tdd.setRx(totalRX);
+                                                        tdd.setTx(totalTX);
+                                                        tdd.setTotal(total);
+                                                        tdd.setLastTime(System.currentTimeMillis());
+                                                        DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                                                    }else{  // 说明 存在程序重启或关机重启情况
+                                                        if(total > tdd.getTotal()){  //说明是程序重启了
+                                                            startTime = System.currentTimeMillis();
+                                                            //创建新数据
+                                                            tdd = new TrafficDayDetail();
+                                                            tdd.setStartTime(startTime);
+                                                            tdd.setRx(totalRX);
+                                                            tdd.setTx(totalTX);
+                                                            tdd.setTotal(total);
+                                                            tdd.setLastTime(System.currentTimeMillis());
+                                                            DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                                                        }else{  //说明系统重启了， 流量清零了
+                                                            //重新插入一条记录
+                                                            tdd = new TrafficDayDetail();
+                                                            tdd.setStartTime(startTime);
+                                                            tdd.setRx(totalRX);
+                                                            tdd.setTx(totalTX);
+                                                            tdd.setTotal(total);
+                                                            tdd.setLastTime(System.currentTimeMillis());
+                                                            DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                                                        }
+                                                    }
+                                                }else if (!startTimeYMD.equals(nowYMD)){ //隔天运行了
+                                                    //考虑每次入库时要减去 前一次的数据
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -160,4 +212,19 @@ public class ZFlow {
         ZLog.ddd("*******************TrafficStats*END*******************");
     }
 
+    // Long时间格式化
+    public static String getYMDHMSFromLong(Long date) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        java.util.Date dt = new java.util.Date(date);
+        String sDateTime = df.format(dt);
+        return sDateTime;
+    }
+
+    // Long时间格式化
+    public static String getYMDFromLong(Long date) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        java.util.Date dt = new java.util.Date(date);
+        String sDateTime = df.format(dt);
+        return sDateTime;
+    }
 }
