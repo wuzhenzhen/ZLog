@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //只控制台打印
-//		ZLog.v("The is verbose log");
+		ZLog.v("The is verbose log");
 //		ZLog.v("The is verbose log", "TAG1", "TAG2", "TAG3");
 //		ZLog.d("The is debug log");
 //		ZLog.i("The is info log");

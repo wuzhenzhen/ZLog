@@ -8,14 +8,11 @@ import com.github.library.flow.greendao.DaoSession;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-
 /**
-* @date 2017/9/5
-* @auther wangyt
-* @version 1.0
-* @describe 数据库管理类
-*/
-
+ * Created by wzz on 2019/04/22.
+ * kgd.zhen@gmail.com
+ * 数据库管理类
+ */
 public enum DaoManager {
     INSTANCE;
 
@@ -36,7 +33,7 @@ public enum DaoManager {
 
     public DaoMaster getDaoMaster(){
         if (null == daoMaster){
-            DB_NAME = "manicure.db";
+            DB_NAME = "zlog.db";
             devOpenHelper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
             daoMaster = new DaoMaster(devOpenHelper.getWritableDb());
         }

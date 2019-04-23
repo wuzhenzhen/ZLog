@@ -4,15 +4,16 @@ import android.content.Context;
 
 
 /**
-* @date 2017/9/5
-* @auther wangyt
-* @version 1.0
-* @describe 数据库操作辅助工具类
-*/
-
+ * Created by wzz on 2019/04/22.
+ * kgd.zhen@gmail.com
+ * 数据库操作辅助工具类
+ */
 public enum DaoUtils {
     INSTANCE;
     private DemoOperator mDemoOperator;
+    private TrafficDetailOperator mTraficDetailOperator;
+    private TrafficDayDetailOperator mTraficDayDetailOperator;
+
 
     public void init(Context context){
         BaseOperator.init(context);
@@ -23,4 +24,13 @@ public enum DaoUtils {
         return mDemoOperator;
     }
 
+    public TrafficDetailOperator getTrafficDetailOperator(){
+        if (mTraficDetailOperator == null) mTraficDetailOperator = new TrafficDetailOperator();
+        return mTraficDetailOperator;
+    }
+
+    public TrafficDayDetailOperator getTrafficDayDetailOperator(){
+        if (mTraficDayDetailOperator == null) mTraficDayDetailOperator = new TrafficDayDetailOperator();
+        return mTraficDayDetailOperator;
+    }
 }

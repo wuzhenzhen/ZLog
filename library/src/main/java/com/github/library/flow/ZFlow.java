@@ -8,24 +8,81 @@ import android.support.annotation.NonNull;
 
 import com.github.library.ZLog;
 import com.github.library.flow.dbutils.DaoUtils;
+import com.github.library.flow.entity.TrafficDetail;
 
 import java.util.List;
 
 /**
  * Created by wzz on 2019/04/22.
- * wuzhenzhen@tiamaes.com
+ * kgd.zhen@gmail.com
  */
 public class ZFlow {
     //1 级 Tag
     public static final String TAG = "ZFlow";
     //Application Context 防止内存泄露
     private static Context mContext;
+    private final static long startTime =  System.currentTimeMillis(); //开机时间
 
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
-//        initialize(context, defaultConfig());
         //--------数据库初始化
         DaoUtils.INSTANCE.init(mContext);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        Thread.sleep(30*1000L);
+                        // 获取到配置权限信息的应用程序
+                        PackageManager pms = context.getPackageManager();
+                        List<PackageInfo> packinfos = pms
+                                .getInstalledPackages(PackageManager.GET_PERMISSIONS);
+                        for (PackageInfo packinfo : packinfos) {
+                            boolean isPrint = false;
+                            // 获取该应用的所有权限信息
+                            String[] permissions = packinfo.requestedPermissions;
+                            if (permissions != null && permissions.length > 0) {
+                                for (String permission : permissions) {
+                                    // 筛选出具有Internet权限的应用程序
+                                    if ("android.permission.INTERNET".equals(permission)) {
+                                        long lastTime = System.currentTimeMillis();
+                                        String packageName = packinfo.packageName;
+                                        int uid = packinfo.applicationInfo.uid;
+                                        long uidRX = TrafficStats.getUidRxBytes(packinfo.applicationInfo.uid);
+                                        long uidTX = TrafficStats.getUidTxBytes(packinfo.applicationInfo.uid);
+                                        long mobileRX = TrafficStats.getMobileRxBytes();
+                                        long mobileTX = TrafficStats.getMobileTxBytes();
+                                        long totalRX = TrafficStats.getTotalRxBytes();
+                                        long totalTX = TrafficStats.getTotalTxBytes();
+                                        long total = totalRX + totalTX;
+                                        if (uidRX > 0 || uidTX > 0) {
+                                            TrafficDetail td = new TrafficDetail();
+                                            td.setPackageName(packageName);
+                                            td.setStartTime(startTime);
+                                            td.setUid(uid);
+                                            td.setUidRX(uidRX);
+                                            td.setUidTX(uidTX);
+
+                                            td.setMobileRX(mobileRX);
+                                            td.setMobileTX(mobileTX);
+                                            td.setTotalRX(totalRX);
+                                            td.setTotalTX(totalTX);
+                                            td.setTotal(total);
+                                            td.setLastTime(System.currentTimeMillis());
+                                            ZLog.ddd("--traffic--"+td.toString());
+                                            DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     /**

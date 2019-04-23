@@ -9,12 +9,10 @@ import java.util.List;
 
 
 /**
-* @date 2017/9/5
-* @auther wangyt
-* @version 1.0
-* @describe 数据操作基类
-*/
-
+ * Created by wzz on 2019/04/22.
+ * kgd.zhen@gmail.com
+ * 数据操作基类
+ */
 public abstract class BaseOperator<T> {
     private String TAG = "<<<<<<" + getClass().getSimpleName();
 

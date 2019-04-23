@@ -139,7 +139,6 @@ public class ZLog {
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
         initialize(context, defaultConfig());
-        ZFlow.initialize(context.getApplicationContext());
     }
 
     /**
@@ -164,6 +163,7 @@ public class ZLog {
         if (config.fileOutFormat != null) {
             m_cOutputFormat = config.fileOutFormat;
         }
+        ZFlow.initialize(context.getApplicationContext());
     }
 
     private static Config defaultConfig() {
