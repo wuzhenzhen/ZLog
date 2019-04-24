@@ -19,15 +19,15 @@ import java.util.List;
  * kgd.zhen@gmail.com
  */
 public class ZFlow {
-    //1 çº§ Tag
+    //1 ¼¶ Tag
     public static final String TAG = "ZFlow";
-    //Application Context é˜²æ­¢å†…å­˜æ³„éœ²
+    //Application Context ·ÀÖ¹ÄÚ´æĞ¹Â¶
     private static Context mContext;
-    private static long startTime =  System.currentTimeMillis(); //å¼€æœºæ—¶é—´
+    private static long startTime =  System.currentTimeMillis(); //¿ª»úÊ±¼ä
 
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
-        //--------æ•°æ®åº“åˆå§‹åŒ–
+        //--------Êı¾İ¿â³õÊ¼»¯
         DaoUtils.INSTANCE.init(mContext);
 
         new Thread(new Runnable() {
@@ -36,17 +36,17 @@ public class ZFlow {
                 while (true){
                     try {
                         Thread.sleep(30*1000L);
-                        // è·å–åˆ°é…ç½®æƒé™ä¿¡æ¯çš„åº”ç”¨ç¨‹åº
+                        // »ñÈ¡µ½ÅäÖÃÈ¨ÏŞĞÅÏ¢µÄÓ¦ÓÃ³ÌĞò
                         PackageManager pms = context.getPackageManager();
                         List<PackageInfo> packinfos = pms
                                 .getInstalledPackages(PackageManager.GET_PERMISSIONS);
                         for (PackageInfo packinfo : packinfos) {
                             boolean isPrint = false;
-                            // è·å–è¯¥åº”ç”¨çš„æ‰€æœ‰æƒé™ä¿¡æ¯
+                            // »ñÈ¡¸ÃÓ¦ÓÃµÄËùÓĞÈ¨ÏŞĞÅÏ¢
                             String[] permissions = packinfo.requestedPermissions;
                             if (permissions != null && permissions.length > 0) {
                                 for (String permission : permissions) {
-                                    // ç­›é€‰å‡ºå…·æœ‰Internetæƒé™çš„åº”ç”¨ç¨‹åº
+                                    // É¸Ñ¡³ö¾ßÓĞInternetÈ¨ÏŞµÄÓ¦ÓÃ³ÌĞò
                                     if ("android.permission.INTERNET".equals(permission)) {
                                         long lastTime = System.currentTimeMillis();
                                         String packageName = packinfo.packageName;
@@ -74,10 +74,10 @@ public class ZFlow {
                                             td.setTotal(total);
                                             td.setLastTime(lastTime);
                                             ZLog.iii("--traffic--"+td.toString());
-                                            // ä¿å­˜è¯¦ç»†æµé‡æ•°æ®
+                                            // ±£´æÏêÏ¸Á÷Á¿Êı¾İ
                                             DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
 
-                                            // æ›´æ–° trafficDayDetail
+                                            // ¸üĞÂ trafficDayDetail
                                             updateTrafficDyaDetail(totalRX, totalTX, total);
                                         }
                                     }
@@ -92,11 +92,11 @@ public class ZFlow {
         }).start();
     }
 
-    // æ›´æ–° trafficDayDetail
+    // ¸üĞÂ trafficDayDetail
     public static void updateTrafficDyaDetail(long totalRX, long totalTX, long total){
-        //æ›´æ–° startTime(å¼€æœºæ—¶é—´)  åˆ°ç°åœ¨çš„æµé‡
+        //¸üĞÂ startTime(¿ª»úÊ±¼ä)  µ½ÏÖÔÚµÄÁ÷Á¿
         TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime();
-        if(tdd == null){  //ä¸€æ¡æ•°æ®ä¹Ÿæ²¡æœ‰
+        if(tdd == null){  //Ò»ÌõÊı¾İÒ²Ã»ÓĞ
             tdd = new TrafficDayDetail();
             tdd.setStartTime(startTime);
             tdd.setRx(totalRX);
@@ -105,29 +105,29 @@ public class ZFlow {
             tdd.setLastTime(System.currentTimeMillis());
             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
         }else{
-            String lastYMD = getYMDFromLong(tdd.getStartTime());  //æ•°æ®åº“ é‡Œæœ€åä¸€æ¡è®°å½•çš„æ—¶é—´
-            String startTimeYMD = getYMDFromLong(startTime);  //å¼€æœºæ—¶é—´
-            String nowYMD = getYMDFromLong(System.currentTimeMillis()); //å½“å‰æ—¶é—´
-            if(lastYMD.equals(startTimeYMD) && lastYMD.equals(nowYMD)){  //åŒä¸€å¤©
-                if(startTime == tdd.getStartTime()){ //æ­¤è®°å½•å·²å­˜åœ¨, ä¸”startTime ä¸€æ ·
-                    //ç»§ç»­æ›´æ–°æ•°æ®
+            String lastYMD = getYMDFromLong(tdd.getStartTime());  //Êı¾İ¿â Àï×îºóÒ»Ìõ¼ÇÂ¼µÄÊ±¼ä
+            String startTimeYMD = getYMDFromLong(startTime);  //¿ª»úÊ±¼ä
+            String nowYMD = getYMDFromLong(System.currentTimeMillis()); //µ±Ç°Ê±¼ä
+            if(lastYMD.equals(startTimeYMD) && lastYMD.equals(nowYMD)){  //Í¬Ò»Ìì
+                if(startTime == tdd.getStartTime()){ //´Ë¼ÇÂ¼ÒÑ´æÔÚ, ÇÒstartTime Ò»Ñù
+                    //¼ÌĞø¸üĞÂÊı¾İ
                     tdd.setRx(totalRX);
                     tdd.setTx(totalTX);
                     tdd.setTotal(total);
                     tdd.setLastTime(System.currentTimeMillis());
                     DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                }else{  // è¯´æ˜ å­˜åœ¨ç¨‹åºé‡å¯æˆ–å…³æœºé‡å¯æƒ…å†µ
-                    if(total > tdd.getTotal()){  //è¯´æ˜æ˜¯ç¨‹åºé‡å¯äº†
+                }else{  // ËµÃ÷ ´æÔÚ³ÌĞòÖØÆô»ò¹Ø»úÖØÆôÇé¿ö
+                    if(total > tdd.getTotal()){  //ËµÃ÷ÊÇ³ÌĞòÖØÆôÁË
                         startTime = System.currentTimeMillis();
-                        //åˆ›å»ºæ–°æ•°æ®
+                        //´´½¨ĞÂÊı¾İ
                         tdd.setStartTime(startTime);
                         tdd.setRx(totalRX);
                         tdd.setTx(totalTX);
                         tdd.setTotal(total);
                         tdd.setLastTime(System.currentTimeMillis());
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                    }else{  //è¯´æ˜ç³»ç»Ÿé‡å¯äº†ï¼Œ æµé‡æ¸…é›¶äº†
-                        //é‡æ–°æ’å…¥ä¸€æ¡è®°å½•
+                    }else{  //ËµÃ÷ÏµÍ³ÖØÆôÁË£¬ Á÷Á¿ÇåÁãÁË
+                        //ÖØĞÂ²åÈëÒ»Ìõ¼ÇÂ¼
                         tdd = new TrafficDayDetail();
                         tdd.setStartTime(startTime);
 
@@ -138,8 +138,8 @@ public class ZFlow {
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
                     }
                 }
-            }else if (!lastYMD.equals(startTimeYMD)){ // æœ€åä¸€æ¬¡è®°å½•æ—¶é—´ ä¸ å¼€æœºæ—¶é—´ä¸è‡´ï¼Œè¯´æ˜æ˜¯ç¬¬äºŒå¤©è¿è¡Œçš„
-                //é‡æ–°æ’å…¥ä¸€æ¡è®°å½•
+            }else if (!lastYMD.equals(startTimeYMD)){ // ×îºóÒ»´Î¼ÇÂ¼Ê±¼ä Óë ¿ª»úÊ±¼ä²»ÖÂ£¬ËµÃ÷ÊÇµÚ¶şÌìÔËĞĞµÄ
+                //ÖØĞÂ²åÈëÒ»Ìõ¼ÇÂ¼
                 tdd = new TrafficDayDetail();
                 tdd.setStartTime(startTime);
 
@@ -148,9 +148,9 @@ public class ZFlow {
                 tdd.setTotal(total);
                 tdd.setLastTime(System.currentTimeMillis());
                 DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-            }else if (lastYMD.equals(startTimeYMD) && !startTimeYMD.equals(nowYMD)){ //éš”å¤©è¿è¡Œäº†
-                //æ˜¨å¤©å¼€æœºä¸€ç›´è¿è¡Œåˆ°ä»Šå¤©
-                //è€ƒè™‘æ¯æ¬¡å…¥åº“æ—¶è¦å‡å» å‰ä¸€æ¬¡çš„æ•°æ®
+            }else if (lastYMD.equals(startTimeYMD) && !startTimeYMD.equals(nowYMD)){ //¸ôÌìÔËĞĞÁË
+                //×òÌì¿ª»úÒ»Ö±ÔËĞĞµ½½ñÌì
+                //¿¼ÂÇÃ¿´ÎÈë¿âÊ±Òª¼õÈ¥ Ç°Ò»´ÎµÄÊı¾İ
                 TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
                 if(tddYes != null && total > tddYes.getTotal()){
                     tdd = new TrafficDayDetail();
@@ -167,82 +167,8 @@ public class ZFlow {
             }
         }
     }
-    /**
-     * è¿”å›æ‰€æœ‰çš„æœ‰äº’è”ç½‘è®¿é—®æƒé™çš„åº”ç”¨ç¨‹åºçš„æµé‡ä¿¡æ¯ã€‚ åªç»Ÿè®¡æœ¬æ¬¡å¼€æœºæ‰€ç”¨æµé‡(æ¯æ¬¡å¼€æœºä»0ç»Ÿè®¡æµé‡çš„ )
-     *
-     * @param context
-     * @param type    0 åªæ‰“å°æœ¬app; 1 æ‰“å°uidRx >0 && uidTx>0; 2 æ‰“å°æ‰€æœ‰;
-     */
-    public static void printTrafficInfo(Context context, int type) {
-        // http://blog.csdn.net/u010402982/article/details/50424084
-        ZLog.ddd("*******************TrafficStats*START*****************");
 
-        // è·å–åˆ°é…ç½®æƒé™ä¿¡æ¯çš„åº”ç”¨ç¨‹åº
-        PackageManager pms = context.getPackageManager();
-        List<PackageInfo> packinfos = pms
-                .getInstalledPackages(PackageManager.GET_PERMISSIONS);
-        for (PackageInfo packinfo : packinfos) {
-            boolean isPrint = false;
-            // è·å–è¯¥åº”ç”¨çš„æ‰€æœ‰æƒé™ä¿¡æ¯
-            String[] permissions = packinfo.requestedPermissions;
-            if (permissions != null && permissions.length > 0) {
-                for (String permission : permissions) {
-                    // ç­›é€‰å‡ºå…·æœ‰Internetæƒé™çš„åº”ç”¨ç¨‹åº
-                    if ("android.permission.INTERNET".equals(permission)) {
-                        if (type == 0) { // åªæ‰“å°æœ¬appçš„
-                            if (packinfo.packageName.equals(context
-                                    .getPackageName())) {
-                                isPrint = true;
-                            } else {
-                                continue;
-                            }
-                        } else if (type == 1) { // æ‰“å°uidRx >0 && uidTx>0
-                            if (TrafficStats
-                                    .getUidRxBytes(packinfo.applicationInfo.uid) > 0
-                                    && TrafficStats
-                                    .getUidTxBytes(packinfo.applicationInfo.uid) > 0) {
-                                isPrint = true;
-                            } else {
-                                continue;
-                            }
-                        } else if (type == 2) { // æ‰“å°æ‰€æœ‰çš„
-                            isPrint = true;
-                        }
-                        // String key =
-                        // AppUtils.getDateStrFromLong(System.currentTimeMillis(),"yyyy-MM-dd");
-                        String value = "--"
-                                + packinfo.packageName
-                                + "--"
-                                + packinfo.applicationInfo.loadLabel(pms)
-                                .toString()
-                                + "--"
-                                + packinfo.applicationInfo.uid
-                                + "--uidRx="
-                                + TrafficStats
-                                .getUidRxBytes(packinfo.applicationInfo.uid)
-                                + "--uidTx="
-                                + TrafficStats
-                                .getUidTxBytes(packinfo.applicationInfo.uid)
-                                + "--MobileRx="
-                                + TrafficStats.getMobileRxBytes()
-                                + "--MobileTx="
-                                + TrafficStats.getMobileTxBytes()
-                                + "--TotalRx=" + TrafficStats.getTotalRxBytes()
-                                + "--TotalTx=" + TrafficStats.getTotalTxBytes();
-
-                        if (isPrint)
-                            ZLog.iii(value);
-                        // //æ§åˆ¶å°+å†™å…¥Log æ–‡ä»¶,ä¸”æŒ‡å®š Logæ–‡ä»¶å
-                        // Logcat.fvv(key+value, "2017-10-31-tra.log");
-                        break;
-                    }
-                }
-            }
-        }
-        ZLog.ddd("*******************TrafficStats*END*******************");
-    }
-
-    // Longæ—¶é—´æ ¼å¼åŒ–
+    // LongÊ±¼ä¸ñÊ½»¯
     public static String getYMDHMSFromLong(Long date) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         java.util.Date dt = new java.util.Date(date);
@@ -250,7 +176,7 @@ public class ZFlow {
         return sDateTime;
     }
 
-    // Longæ—¶é—´æ ¼å¼åŒ–
+    // LongÊ±¼ä¸ñÊ½»¯
     public static String getYMDFromLong(Long date) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         java.util.Date dt = new java.util.Date(date);
@@ -258,12 +184,12 @@ public class ZFlow {
         return sDateTime;
     }
 
-    //è¿”å›æ˜¨å¤©çš„æ€»æµé‡
+    //·µ»Ø×òÌìµÄ×ÜÁ÷Á¿
     public static long getSumFlowYesterday(){
         return DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlowYesterday();
     }
 
-    //è¿”å›æŸå¤©çš„æ€»æµé‡
+    //·µ»ØÄ³ÌìµÄ×ÜÁ÷Á¿
     public static long getSumFlow(long timeMillis){
         return DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlow(timeMillis);
     }

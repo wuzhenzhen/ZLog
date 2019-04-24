@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by wzz on 2019/04/23.
  * kgd.zhen@gmail.com
- * æ•°æ®åº“å®ä¾‹æ“ä½œç±»
+ * Êı¾İ¿âÊµÀı²Ù×÷Àà
  */
 public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
 
@@ -37,7 +37,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    //è·å–æœ€åæ’å…¥çš„ä¸€æ¡æ•°æ®
+    //»ñÈ¡×îºó²åÈëµÄÒ»ÌõÊı¾İ
     public TrafficDayDetail queryByLastTime() {
         QueryBuilder<TrafficDayDetail> queryBuilder =
                 getDaoSession().getTrafficDayDetailDao().queryBuilder();
@@ -50,7 +50,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    //è·å–æ˜¨å¤©æœ€åä¸€æ¡æ•°æ®
+    //»ñÈ¡×òÌì×îºóÒ»ÌõÊı¾İ
     public TrafficDayDetail queryByYesterday() {
         long currentTime = System.currentTimeMillis();
         QueryBuilder<TrafficDayDetail> queryBuilder =
@@ -65,7 +65,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    // æŸ¥è¯¢æŸå¤©çš„æ•°æ®æ€»æµé‡
+    // ²éÑ¯Ä³ÌìµÄÊı¾İ×ÜÁ÷Á¿
     public long querySumFlow(long timeMillis){
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
         String startTime = String.valueOf(getStartTime(timeMillis,0));
@@ -85,7 +85,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return sumFlow;
     }
 
-    // æŸ¥è¯¢æ˜¨å¤©ä½¿ç”¨çš„æ€»æµé‡æƒ…å†µ
+    // ²éÑ¯×òÌìÊ¹ÓÃµÄ×ÜÁ÷Á¿Çé¿ö
     public long querySumFlowYesterday(){
         long currentTime = System.currentTimeMillis();
         String startTime = String.valueOf(getStartTime(currentTime, -1));
@@ -122,9 +122,9 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
     }
 
     /**
-     *   è¿”å›æŸå¤©çš„å¼€å§‹æ—¶é—´ long ï¼ˆå¦‚ 2019-04-24 00:00:00ï¼‰
-     *   å¦‚ï¼š getStartTime(System.currentTimeMillis(),-1);    //è¿”å›æ˜¨å¤©çš„å¼€å§‹æ—¶é—´
-     *        getStartTime(System.currentTimeMillis(),0);    //è¿”å›å½“å¤©çš„å¼€å§‹æ—¶é—´
+     *   ·µ»ØÄ³ÌìµÄ¿ªÊ¼Ê±¼ä long £¨Èç 2019-04-24 00:00:00£©
+     *   Èç£º getStartTime(System.currentTimeMillis(),-1);    //·µ»Ø×òÌìµÄ¿ªÊ¼Ê±¼ä
+     *        getStartTime(System.currentTimeMillis(),0);    //·µ»Øµ±ÌìµÄ¿ªÊ¼Ê±¼ä
      * @param timeMillis
      * @param day
      * @return
@@ -137,17 +137,17 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
-        System.out.println("å¼€å§‹æ—¶é—´ï¼š"+calendar.getTime());
+        System.out.println("¿ªÊ¼Ê±¼ä£º"+calendar.getTime());
         return calendar.getTimeInMillis();
     }
 
     /**
-     * è¿”å›æŸå¤©çš„ç»“æŸæ—¶é—´ long ï¼ˆå¦‚ 2019-04-24 23:59:59ï¼‰
+     * ·µ»ØÄ³ÌìµÄ½áÊøÊ±¼ä long £¨Èç 2019-04-24 23:59:59£©
      * @param timeMillis
      * @param day
      * @return
-     *   å¦‚ï¼š getEndTime(System.currentTimeMillis(),-1);    //è¿”å›æ˜¨å¤©çš„ç»“æŸæ—¶é—´
-     *        getEndTime(System.currentTimeMillis(),0);    //è¿”å›å½“å¤©çš„ç»“æŸæ—¶é—´
+     *   Èç£º getEndTime(System.currentTimeMillis(),-1);    //·µ»Ø×òÌìµÄ½áÊøÊ±¼ä
+     *        getEndTime(System.currentTimeMillis(),0);    //·µ»Øµ±ÌìµÄ½áÊøÊ±¼ä
      */
     public static long getEndTime(long timeMillis, int day){
         Calendar calendar = Calendar.getInstance();
@@ -157,7 +157,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
         calendar.set(Calendar.MILLISECOND,999);
-        System.out.println("ç»“æŸæ—¶é—´ï¼š"+calendar.getTime());
+        System.out.println("½áÊøÊ±¼ä£º"+calendar.getTime());
         return calendar.getTimeInMillis();
     }
 

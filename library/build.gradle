@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 101
-        versionName "1.0.1"
+        versionCode 102
+        versionName "1.0.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -29,6 +29,10 @@ android {
         daoPackage 'com.github.library.flow.greendao'
         targetGenDir 'src/main/java'
     }
+
+    lintOptions{
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -46,6 +50,12 @@ def _BASENAME = "ZLog";
 def _VERSION = "_V1.0.1";
 def _DestinationPath = "build"; //生成jar包的位置
 def zipFile = file('build/intermediates/bundles/release/classes.jar'); //待打包文件位置
+
+task javadoc(type: Javadoc) {
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    failOnError false
+}
 
 task deleteBuild(type:Delete){
     delete _DestinationPath + _BASENAME + _VERSION + ".jar"
@@ -65,7 +75,7 @@ publish {
     userOrg = 'shed'
     groupId = 'com.kgd.tools'
     artifactId = 'ZLog'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'this is a android log tools'
     website = 'https://github.com/wuzhenzhen/ZLog'
 }
