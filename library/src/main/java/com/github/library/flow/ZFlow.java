@@ -257,4 +257,11 @@ public class ZFlow {
         String sDateTime = df.format(dt);
         return sDateTime;
     }
+
+    public static long getFlow(){
+        long flow = DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlowYesterday();
+        return flow;
+    }
 }
+
+

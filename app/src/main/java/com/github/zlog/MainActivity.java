@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.library.ZLog;
+import com.github.library.flow.ZFlow;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 //        ZLog.e().msg("output error msg").out().ln().msg("Do you see? 。。。。").format("a:%s;b:%s", 2, 3).out();
         //... Test More
 
+        ZLog.eee("=========Flow==========start");
+        ZLog.iii("---flow="+ZFlow.getFlow());
+        ZLog.eee("=========Flow==========end");
 
 
     }
