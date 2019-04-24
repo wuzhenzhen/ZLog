@@ -258,9 +258,14 @@ public class ZFlow {
         return sDateTime;
     }
 
-    public static long getFlow(){
-        long flow = DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlowYesterday();
-        return flow;
+    //返回昨天的总流量
+    public static long getSumFlowYesterday(){
+        return DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlowYesterday();
+    }
+
+    //返回某天的总流量
+    public static long getSumFlow(long timeMillis){
+        return DaoUtils.INSTANCE.getTrafficDayDetailOperator().querySumFlow(timeMillis);
     }
 }
 
