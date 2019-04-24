@@ -57,6 +57,7 @@ public class ZFlow {
                                         long mobileTX = TrafficStats.getMobileTxBytes();
                                         long totalRX = TrafficStats.getTotalRxBytes();
                                         long totalTX = TrafficStats.getTotalTxBytes();
+
                                         long total = totalRX + totalTX;
                                         if (uidRX > 0 || uidTX > 0) {
                                             TrafficDetail td = new TrafficDetail();
@@ -72,58 +73,12 @@ public class ZFlow {
                                             td.setTotalTX(totalTX);
                                             td.setTotal(total);
                                             td.setLastTime(lastTime);
-                                            ZLog.ddd("--traffic--"+td.toString());
+                                            ZLog.iii("--traffic--"+td.toString());
                                             // 保存详细流量数据
                                             DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
 
-                                            //更新 startTime(开机时间)  到现在的流量
-                                            TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime();
-                                            if(tdd == null){  //一条数据也没有
-                                                tdd = new TrafficDayDetail();
-                                                tdd.setStartTime(startTime);
-                                                tdd.setRx(totalRX);
-                                                tdd.setTx(totalTX);
-                                                tdd.setTotal(total);
-                                                tdd.setLastTime(System.currentTimeMillis());
-                                                DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                                            }else{
-                                                String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录
-                                                String startTimeYMD = getYMDFromLong(startTime);  //开机时间
-                                                String nowYMD = getYMDFromLong(System.currentTimeMillis()); //现在时间
-                                                if(lastYMD.equals(startTimeYMD) && lastYMD.equals(nowYMD)){  //同一天
-                                                    if(startTime == tdd.getStartTime()){ //此记录已存在, 且startTime 一样
-                                                        //继续更新数据
-                                                        tdd.setRx(totalRX);
-                                                        tdd.setTx(totalTX);
-                                                        tdd.setTotal(total);
-                                                        tdd.setLastTime(System.currentTimeMillis());
-                                                        DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                                                    }else{  // 说明 存在程序重启或关机重启情况
-                                                        if(total > tdd.getTotal()){  //说明是程序重启了
-                                                            startTime = System.currentTimeMillis();
-                                                            //创建新数据
-                                                            tdd = new TrafficDayDetail();
-                                                            tdd.setStartTime(startTime);
-                                                            tdd.setRx(totalRX);
-                                                            tdd.setTx(totalTX);
-                                                            tdd.setTotal(total);
-                                                            tdd.setLastTime(System.currentTimeMillis());
-                                                            DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                                                        }else{  //说明系统重启了， 流量清零了
-                                                            //重新插入一条记录
-                                                            tdd = new TrafficDayDetail();
-                                                            tdd.setStartTime(startTime);
-                                                            tdd.setRx(totalRX);
-                                                            tdd.setTx(totalTX);
-                                                            tdd.setTotal(total);
-                                                            tdd.setLastTime(System.currentTimeMillis());
-                                                            DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                                                        }
-                                                    }
-                                                }else if (!startTimeYMD.equals(nowYMD)){ //隔天运行了
-                                                    //考虑每次入库时要减去 前一次的数据
-                                                }
-                                            }
+                                            // 更新 trafficDayDetail
+                                            updateTrafficDyaDetail(totalRX, totalTX, total);
                                         }
                                     }
                                 }
@@ -137,6 +92,81 @@ public class ZFlow {
         }).start();
     }
 
+    // 更新 trafficDayDetail
+    public static void updateTrafficDyaDetail(long totalRX, long totalTX, long total){
+        //更新 startTime(开机时间)  到现在的流量
+        TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime();
+        if(tdd == null){  //一条数据也没有
+            tdd = new TrafficDayDetail();
+            tdd.setStartTime(startTime);
+            tdd.setRx(totalRX);
+            tdd.setTx(totalTX);
+            tdd.setTotal(total);
+            tdd.setLastTime(System.currentTimeMillis());
+            DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+        }else{
+            String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录的时间
+            String startTimeYMD = getYMDFromLong(startTime);  //开机时间
+            String nowYMD = getYMDFromLong(System.currentTimeMillis()); //当前时间
+            if(lastYMD.equals(startTimeYMD) && lastYMD.equals(nowYMD)){  //同一天
+                if(startTime == tdd.getStartTime()){ //此记录已存在, 且startTime 一样
+                    //继续更新数据
+                    tdd.setRx(totalRX);
+                    tdd.setTx(totalTX);
+                    tdd.setTotal(total);
+                    tdd.setLastTime(System.currentTimeMillis());
+                    DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                }else{  // 说明 存在程序重启或关机重启情况
+                    if(total > tdd.getTotal()){  //说明是程序重启了
+                        startTime = System.currentTimeMillis();
+                        //创建新数据
+                        tdd.setStartTime(startTime);
+                        tdd.setRx(totalRX);
+                        tdd.setTx(totalTX);
+                        tdd.setTotal(total);
+                        tdd.setLastTime(System.currentTimeMillis());
+                        DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                    }else{  //说明系统重启了， 流量清零了
+                        //重新插入一条记录
+                        tdd = new TrafficDayDetail();
+                        tdd.setStartTime(startTime);
+
+                        tdd.setRx(totalRX);
+                        tdd.setTx(totalTX);
+                        tdd.setTotal(total);
+                        tdd.setLastTime(System.currentTimeMillis());
+                        DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                    }
+                }
+            }else if (!lastYMD.equals(startTimeYMD)){ // 最后一次记录时间 与 开机时间不致，说明是第二天运行的
+                //重新插入一条记录
+                tdd = new TrafficDayDetail();
+                tdd.setStartTime(startTime);
+
+                tdd.setRx(totalRX);
+                tdd.setTx(totalTX);
+                tdd.setTotal(total);
+                tdd.setLastTime(System.currentTimeMillis());
+                DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+            }else if (lastYMD.equals(startTimeYMD) && !startTimeYMD.equals(nowYMD)){ //隔天运行了
+                //昨天开机一直运行到今天
+                //考虑每次入库时要减去 前一次的数据
+                TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
+                if(tddYes != null && total > tddYes.getTotal()){
+                    tdd = new TrafficDayDetail();
+                    startTime = System.currentTimeMillis();
+                    tdd.setStartTime(startTime);
+                    tdd.setRx(totalRX - tddYes.getRx());
+                    tdd.setTx(totalTX - tddYes.getTx());
+                    tdd.setTotal(total - tddYes.getTotal());
+                    tdd.setLastTime(System.currentTimeMillis());
+                    DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                }else{
+                    ZLog.eee("--error--");
+                }
+            }
+        }
+    }
     /**
      * 返回所有的有互联网访问权限的应用程序的流量信息。 只统计本次开机所用流量(每次开机从0统计流量的 )
      *
