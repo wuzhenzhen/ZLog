@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         ZLog.eee("=========Flow==========start");
         ZLog.iii("---flow="+ZFlow.getSumFlowYesterday());
+        ZLog.iii("---flow="+ZFlow.getSumFlow(System.currentTimeMillis()));
         ZLog.eee("=========Flow==========end");
 
 

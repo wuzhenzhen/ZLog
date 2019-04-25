@@ -13,6 +13,7 @@ public class Builder {
     public Character logCatLogLevel;    //控制台输出日志等级
     public Character fileLogLevel;      //保存日志等级
     public Character fileOutFormat;     //保存日志格式
+    public boolean dbFlowStatistics; //流量统计
 
 
     public Config build() {
@@ -51,6 +52,11 @@ public class Builder {
 
     public Builder fileOutFormat(int fileOutFormat) {
         this.fileOutFormat = (char) fileOutFormat;
+        return this;
+    }
+
+    public Builder dbFlowStatistics(boolean isEnable){
+        this.dbFlowStatistics = isEnable;
         return this;
     }
 }

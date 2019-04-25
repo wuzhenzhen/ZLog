@@ -10,11 +10,13 @@ public class Config {
     public Character logCatLogLevel;
     public Character fileLogLevel;
     public Character fileOutFormat;
+    public boolean isEnableFlowStatistics;
 
     public Config(Builder builder) {
         this.logSavePath = builder.logSavePath;
         this.logCatLogLevel = builder.logCatLogLevel;
         this.fileLogLevel = builder.fileLogLevel;
         this.fileOutFormat = builder.fileOutFormat;
+        this.isEnableFlowStatistics = builder.dbFlowStatistics;
     }
 }

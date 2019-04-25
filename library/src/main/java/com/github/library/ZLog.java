@@ -163,7 +163,9 @@ public class ZLog {
         if (config.fileOutFormat != null) {
             m_cOutputFormat = config.fileOutFormat;
         }
-        ZFlow.initialize(context.getApplicationContext());
+        if(config.isEnableFlowStatistics){
+            ZFlow.initialize(context.getApplicationContext());
+        }
     }
 
     private static Config defaultConfig() {

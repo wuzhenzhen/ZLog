@@ -73,7 +73,7 @@ public class ZFlow {
                                             td.setTotalTX(totalTX);
                                             td.setTotal(total);
                                             td.setLastTime(lastTime);
-                                            ZLog.iii("--traffic--"+td.toString());
+//                                            ZLog.ddd("--traffic--"+td.toString());
                                             // 保存详细流量数据
                                             DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
 
@@ -85,6 +85,10 @@ public class ZFlow {
                             }
                         }
                     } catch (InterruptedException e) {
+                        ZLog.eee("--ZFlow--InterruptedException--"+e.getLocalizedMessage());
+                        e.printStackTrace();
+                    } catch (Exception e){
+                        ZLog.eee("--ZFlow--Exception--"+e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 }
