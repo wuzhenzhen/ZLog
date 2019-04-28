@@ -96,4 +96,17 @@ public class TrafficDayDetail {
     public void setLastTime(long lastTime) {
         this.lastTime = lastTime;
     }
+
+    @Override
+    public String toString() {
+        return "TrafficDayDetail{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", packageName='" + packageName + '\'' +
+                ", rx=" + rx +
+                ", tx=" + tx +
+                ", total=" + total +
+                ", lastTime=" + lastTime +
+                '}';
+    }
 }

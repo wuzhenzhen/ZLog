@@ -108,6 +108,7 @@ public class ZFlow {
             tdd.setTotal(total);
             tdd.setLastTime(System.currentTimeMillis());
             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+            ZLog.iii("--program first start--");
         }else{
             String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录的时间
             String startTimeYMD = getYMDFromLong(startTime);  //本次开机时间
@@ -130,6 +131,7 @@ public class ZFlow {
                             tdd.setTotal(total);
                             tdd.setLastTime(System.currentTimeMillis());
                             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                            ZLog.iii("--program reboot--");
                         }else{  //说明系统重启了， 流量清零了
                             //重新插入一条记录
                             tdd = new TrafficDayDetail();
@@ -140,6 +142,7 @@ public class ZFlow {
                             tdd.setTotal(total);
                             tdd.setLastTime(System.currentTimeMillis());
                             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                            ZLog.iii("--system reboot--");
                         }
                     }
                 }else{  //昨天开机一直运行到今天
@@ -154,8 +157,9 @@ public class ZFlow {
                         tdd.setTotal(total - tddYes.getTotal());
                         tdd.setLastTime(System.currentTimeMillis());
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                        ZLog.iii("--program run more day--tddYes="+tddYes.toString());
                     }else{
-                        ZLog.eee("--error--");
+                        ZLog.eee("--impossibility error--");
                     }
                 }
             }else { // 最后一次记录时间 与 开机时间不致，说明是第二天开机运行的
@@ -168,6 +172,7 @@ public class ZFlow {
                 tdd.setTotal(total);
                 tdd.setLastTime(System.currentTimeMillis());
                 DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                ZLog.iii("--program run another day--");
             }
         }
     }
