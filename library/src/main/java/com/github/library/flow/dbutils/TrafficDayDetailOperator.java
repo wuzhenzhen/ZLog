@@ -56,7 +56,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         QueryBuilder<TrafficDayDetail> queryBuilder =
                 getDaoSession().getTrafficDayDetailDao().queryBuilder();
         List<TrafficDayDetail> entityAngleRaws = queryBuilder
-                .where(TrafficDayDetailDao.Properties.StartTime.ge(getStartTime(currentTime, -1)),TrafficDayDetailDao.Properties.StartTime.le(getEndTime(currentTime,-1)))
+                .where(TrafficDayDetailDao.Properties.StartTime.ge(getDayStartTime(currentTime, -1)),TrafficDayDetailDao.Properties.StartTime.le(getDayEndTime(currentTime,-1)))
                 .orderDesc(TrafficDayDetailDao.Properties.LastTime)
                 .list();
         if (entityAngleRaws != null && entityAngleRaws.size() > 0){
@@ -68,8 +68,8 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
     // 查询某天的数据总流量
     public long querySumFlow(long timeMillis){
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
-        String startTime = String.valueOf(getStartTime(timeMillis,0));
-        String endTime = String.valueOf(getEndTime(timeMillis,0));
+        String startTime = String.valueOf(getDayStartTime(timeMillis,0));
+        String endTime = String.valueOf(getDayEndTime(timeMillis,0));
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
         long sumFlow = 0;
         try{
@@ -88,8 +88,8 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
     // 查询昨天使用的总流量情况
     public long querySumFlowYesterday(){
         long currentTime = System.currentTimeMillis();
-        String startTime = String.valueOf(getStartTime(currentTime, -1));
-        String endTime = String.valueOf(getEndTime(currentTime, -1));
+        String startTime = String.valueOf(getDayStartTime(currentTime, -1));
+        String endTime = String.valueOf(getDayEndTime(currentTime, -1));
 //        String sql = "select count(TOTAL) countt, sum(TOTAL) sumt from TRAFFIC_DAY_DETAIL where start_time >= 1556035200000 and start_time <= 1556121599000";
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
@@ -108,8 +108,8 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
 //        QueryBuilder<TrafficDayDetail> queryBuilder =
 //                getDaoSession().getTrafficDayDetailDao().queryBuilder();
 //        List<TrafficDayDetail> entityAngleRaws = queryBuilder
-////                .where(TrafficDayDetailDao.Properties.StartTime.in(getStartTime(currentTime), getEndTime(currentTime)))
-//                .where(TrafficDayDetailDao.Properties.StartTime.ge(getStartTime(currentTime)),TrafficDayDetailDao.Properties.StartTime.le(getEndTime(currentTime)))
+////                .where(TrafficDayDetailDao.Properties.StartTime.in(getDayStartTime(currentTime), getDayEndTime(currentTime)))
+//                .where(TrafficDayDetailDao.Properties.StartTime.ge(getDayStartTime(currentTime)),TrafficDayDetailDao.Properties.StartTime.le(getDayEndTime(currentTime)))
 //                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
 //                .list();
 //
@@ -123,16 +123,16 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
 
     /**
      *   返回某天的开始时间 long （如 2019-04-24 00:00:00）
-     *   如： getStartTime(System.currentTimeMillis(),-1);    //返回昨天的开始时间
-     *        getStartTime(System.currentTimeMillis(),0);    //返回当天的开始时间
+     *   如： getDayStartTime(System.currentTimeMillis(),-1);    //返回昨天的开始时间
+     *        getDayStartTime(System.currentTimeMillis(),0);    //返回当天的开始时间
      * @param timeMillis
      * @param day
      * @return
      */
-    public static long getStartTime(long timeMillis, int day){
+    public static long getDayStartTime(long timeMillis, int day){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH + day));
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + day);
         calendar.set(Calendar.HOUR,0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
@@ -146,13 +146,13 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
      * @param timeMillis
      * @param day
      * @return
-     *   如： getEndTime(System.currentTimeMillis(),-1);    //返回昨天的结束时间
-     *        getEndTime(System.currentTimeMillis(),0);    //返回当天的结束时间
+     *   如： getDayEndTime(System.currentTimeMillis(),-1);    //返回昨天的结束时间
+     *        getDayEndTime(System.currentTimeMillis(),0);    //返回当天的结束时间
      */
-    public static long getEndTime(long timeMillis, int day){
+    public static long getDayEndTime(long timeMillis, int day){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH + day));
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + day);
         calendar.set(Calendar.HOUR,23);
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
