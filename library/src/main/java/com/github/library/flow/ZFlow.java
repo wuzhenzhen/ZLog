@@ -24,6 +24,7 @@ public class ZFlow {
     //Application Context 防止内存泄露
     private static Context mContext;
     private static long startTime =  System.currentTimeMillis(); //开机时间
+    private static boolean isRunMoreDay = false;  //是否运行超过一天
 
     public static void initialize(@NonNull Context context) {
         mContext = context.getApplicationContext();
@@ -110,15 +111,26 @@ public class ZFlow {
             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
             ZLog.iii("--program first start--");
         }else{
-            String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录的时间
-            String startTimeYMD = getYMDFromLong(startTime);  //本次开机时间
-            String nowYMD = getYMDFromLong(System.currentTimeMillis()); //当前时间
+            String lastYMD = getYMDFromLong(tdd.getStartTime());  //数据库 里最后一条记录的 年月日 时间
+            String startTimeYMD = getYMDFromLong(startTime);  //本次开机的  年月日 时间
+            String nowYMD = getYMDFromLong(System.currentTimeMillis()); //当前 年月日 时间
             if(lastYMD.equals(startTimeYMD)){  //最后一条记录 与 本次开机是同一天
                 if(lastYMD.equals(nowYMD)){  //同一天
                     if(startTime == tdd.getStartTime()){ //此记录已存在, 且startTime 一样    继续更新数据
-                        tdd.setRx(totalRX);
-                        tdd.setTx(totalTX);
-                        tdd.setTotal(total);
+                        if(isRunMoreDay){
+                            TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
+                            if(tddYes != null){
+                                tdd.setRx(totalRX - tddYes.getRx());
+                                tdd.setTx(totalTX - tddYes.getTx());
+                                tdd.setTotal(total - tddYes.getTotal());
+                            }else {
+                                ZLog.eee("--impossibility error--tddYes is null--1");
+                            }
+                        }else{
+                            tdd.setRx(totalRX);
+                            tdd.setTx(totalTX);
+                            tdd.setTotal(total);
+                        }
                         tdd.setLastTime(System.currentTimeMillis());
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
                     }else{  // 说明 存在程序重启或关机重启情况， 需要重新下startTime 开机时间
@@ -126,9 +138,20 @@ public class ZFlow {
                             startTime = System.currentTimeMillis();
                             //创建新数据
                             tdd.setStartTime(startTime);
-                            tdd.setRx(totalRX);
-                            tdd.setTx(totalTX);
-                            tdd.setTotal(total);
+                            if(isRunMoreDay){
+                                TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
+                                if(tddYes != null){
+                                    tdd.setRx(totalRX - tddYes.getRx());
+                                    tdd.setTx(totalTX - tddYes.getTx());
+                                    tdd.setTotal(total - tddYes.getTotal());
+                                }else {
+                                    ZLog.eee("--impossibility error--tddYes is null--2");
+                                }
+                            }else{
+                                tdd.setRx(totalRX);
+                                tdd.setTx(totalTX);
+                                tdd.setTotal(total);
+                            }
                             tdd.setLastTime(System.currentTimeMillis());
                             DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
                             ZLog.iii("--program reboot--");
@@ -136,7 +159,6 @@ public class ZFlow {
                             //重新插入一条记录
                             tdd = new TrafficDayDetail();
                             tdd.setStartTime(startTime);
-
                             tdd.setRx(totalRX);
                             tdd.setTx(totalTX);
                             tdd.setTotal(total);
@@ -150,6 +172,7 @@ public class ZFlow {
                     TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
                     if(tddYes != null && total > tddYes.getTotal()){
                         tdd = new TrafficDayDetail();
+                        isRunMoreDay = true;
                         startTime = System.currentTimeMillis();
                         tdd.setStartTime(startTime);
                         tdd.setRx(totalRX - tddYes.getRx());
@@ -157,7 +180,7 @@ public class ZFlow {
                         tdd.setTotal(total - tddYes.getTotal());
                         tdd.setLastTime(System.currentTimeMillis());
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                        ZLog.iii("--program run more day--tddYes="+tddYes.toString());
+                        ZLog.iii("--program run more day--tddYes="+tddYes.toString()+"--"+tdd.toString());
                     }else{
                         ZLog.eee("--impossibility error--");
                     }
