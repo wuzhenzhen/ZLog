@@ -47,7 +47,7 @@ dependencies {
 }
 
 def _BASENAME = "ZLog";
-def _VERSION = "_V1.0.2";
+def _VERSION = "_V1.0.3";
 def _DestinationPath = "build"; //生成jar包的位置
 def zipFile = file('build/intermediates/intermediate-jars/release/classes.jar'); //待打包文件位置
 
