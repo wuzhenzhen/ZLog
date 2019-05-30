@@ -5,6 +5,7 @@ import android.database.Cursor;
 import com.github.library.flow.entity.TrafficDayDetail;
 import com.github.library.flow.greendao.TrafficDayDetailDao;
 
+import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.Calendar;
 import java.util.List;
@@ -161,4 +162,15 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return calendar.getTimeInMillis();
     }
 
+    /**
+     *  删除 几天 之前的数据，
+     * @param  day
+     */
+    public void delBeforeTime(int day){
+        QueryBuilder<TrafficDayDetail> queryBuilder =
+                getDaoSession().getTrafficDayDetailDao().queryBuilder();
+        long delTime = System.currentTimeMillis() - (day * 24 * 60 * 60 * 1000L);
+        DeleteQuery<TrafficDayDetail> deleteQuery = queryBuilder.where(TrafficDayDetailDao.Properties.StartTime.le(delTime)).buildDelete();
+        deleteQuery.executeDeleteWithoutDetachingEntities();
+    }
 }

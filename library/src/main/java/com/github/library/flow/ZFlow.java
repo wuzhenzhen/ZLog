@@ -30,7 +30,7 @@ public class ZFlow {
         mContext = context.getApplicationContext();
         //--------数据库初始化
         DaoUtils.INSTANCE.init(mContext);
-
+        clearCache();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -95,6 +95,12 @@ public class ZFlow {
                 }
             }
         }).start();
+    }
+
+    //数据库缓存清理
+    private static void clearCache(){
+        DaoUtils.INSTANCE.getTrafficDetailOperator().delBeforeTime(10); //清除 10天之前的 流量明细数据
+        DaoUtils.INSTANCE.getTrafficDayDetailOperator().delBeforeTime(100); //清除100天之前的流量统计数据
     }
 
     // 更新 trafficDayDetail
