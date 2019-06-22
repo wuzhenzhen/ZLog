@@ -48,26 +48,26 @@ import java.util.concurrent.Executors;
  * kgd.zhen
  */
 public class ZLog {
-    //1 ¼¶ Tag
+    //1 çº§ Tag
     public static final String TAG = "ZLog";
 
-    // ÈÕÖ¾ÀàĞÍ±êÊ¶·û(ÓÅÏÈ¼¶£ºÓÉµÍµ½¸ßÅÅÁĞ£¬È¡ÖµÔ½Ğ¡ÓÅÏÈ¼¶Ô½¸ß)
+    // æ—¥å¿—ç±»å‹æ ‡è¯†ç¬¦(ä¼˜å…ˆçº§ï¼šç”±ä½åˆ°é«˜æ’åˆ—ï¼Œå–å€¼è¶Šå°ä¼˜å…ˆçº§è¶Šé«˜)
     public static final char SHOW_VERBOSE_LOG = 0x01;
     public static final char SHOW_DEBUG_LOG = 0x01 << 1;
     public static final char SHOW_INFO_LOG = 0x01 << 2;
     public static final char SHOW_WARN_LOG = 0x01 << 3;
     public static final char SHOW_ERROR_LOG = 0x01 << 4;
-    //Ôö¼Ójson Êı¾İÊä³ö´¦Àí
+    //å¢åŠ json æ•°æ®è¾“å‡ºå¤„ç†
     public static final char SHOW_JSON_LOG = 0x01 << 5;
-    // ÈÕÖ¾Êä³ö¸ñÊ½
-    public static final char LOG_OUTPUT_FORMAT_1 = 0x01;        //ÈÕÖ¾±£´æÄ¬ÈÏ¸ñÊ½
-    public static final char LOG_OUTPUT_FORMAT_2 = 0x01 << 1;   //ÈÕÖ¾±£´æ¾«¼ò¸ñÊ½
+    // æ—¥å¿—è¾“å‡ºæ ¼å¼
+    public static final char LOG_OUTPUT_FORMAT_1 = 0x01;        //æ—¥å¿—ä¿å­˜é»˜è®¤æ ¼å¼
+    public static final char LOG_OUTPUT_FORMAT_2 = 0x01 << 1;   //æ—¥å¿—ä¿å­˜ç²¾ç®€æ ¼å¼
     public static final char LOG_OUTPUT_FORMAT_3 = 0x01 << 2;
-    //Î»ÔËËã
-    public static final char OPERATION_BIT = 0; //²»ÏÔÊ¾ Ä³¼¶±ğLog
-    public static final char NOT_SHOW_LOG = 0; //²»ÏÔÊ¾ LogTransaction
+    //ä½è¿ç®—
+    public static final char OPERATION_BIT = 0; //ä¸æ˜¾ç¤º æŸçº§åˆ«Log
+    public static final char NOT_SHOW_LOG = 0; //ä¸æ˜¾ç¤º LogTransaction
 
-    //ÈÕÖ¾¼¶±ğ
+    //æ—¥å¿—çº§åˆ«
     public static final String V = "V/";
     public static final String D = "D/";
     public static final String I = "I/";
@@ -75,7 +75,7 @@ public class ZLog {
     public static final String E = "E/";
     public static final String JSON = "JSON/";
 
-    //Tag ·Ö¸î·ûºÅ
+    //Tag åˆ†å‰²ç¬¦å·
     public static final String TAG_SEPARATOR = "->";
 
     public static final char SHOW_ALL_LOG =
@@ -90,39 +90,39 @@ public class ZLog {
 
     public static final char OUTPUT_FORMAT = 0x01; //
 
-    //  Ä¬ÈÏÎªÎåÖÖÈÕÖ¾ÀàĞÍ¾ùÔÚ LogCat ÖĞÊä³öÏÔÊ¾
+    //  é»˜è®¤ä¸ºäº”ç§æ—¥å¿—ç±»å‹å‡åœ¨ LogCat ä¸­è¾“å‡ºæ˜¾ç¤º
     private static char m_cLogCatShowLogType = SHOW_ALL_LOG;
 
-    // Ä¬ÈÏÎªÎåÖÖÈÕÖ¾ÀàĞÍ¾ùÔÚ ÈÕÖ¾ÎÄ¼ş ÖĞÊä³ö±£´æ
+    // é»˜è®¤ä¸ºäº”ç§æ—¥å¿—ç±»å‹å‡åœ¨ æ—¥å¿—æ–‡ä»¶ ä¸­è¾“å‡ºä¿å­˜
     private static char m_cFileSaveLogType = SHOW_ALL_LOG;
 
-    //Ä¬ÈÏÈÕÖ¾Êä³ö¸ñÊ½
+    //é»˜è®¤æ—¥å¿—è¾“å‡ºæ ¼å¼
     private static char m_cOutputFormat = OUTPUT_FORMAT;
 
-    //Ä¬ÈÏÈÕÖ¾±£´æÎÄ¼ş¼Ğ
+    //é»˜è®¤æ—¥å¿—ä¿å­˜æ–‡ä»¶å¤¹
     public static final String DEFAULT_LOG_DIR = "logs";
 
-    // ×Ô¶¨Òå´æ·ÅÈÕÖ¾ÎÄ¼şµÄÄ¿Â¼È«Â·¾¶
+    // è‡ªå®šä¹‰å­˜æ”¾æ—¥å¿—æ–‡ä»¶çš„ç›®å½•å…¨è·¯å¾„
     public static String sLogFolderPath = "";
-    //Application Context ·ÀÖ¹ÄÚ´æĞ¹Â¶
+    //Application Context é˜²æ­¢å†…å­˜æ³„éœ²
     private static Context mContext;
 
-    //»»ĞĞ·û
+    //æ¢è¡Œç¬¦
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    //ÎÄ¼ş separator
+    //æ–‡ä»¶ separator
     private static final String FILE_SEPARATOR = File.separator;
 
     private static final int JSON_INDENT = 3;
-    private static final String LOGFILE_SUFFIX = ".log";  //ÈÕÖ¾ºó×ºÀ©Õ¹Ãû
+    private static final String LOGFILE_SUFFIX = ".log";  //æ—¥å¿—åç¼€æ‰©å±•å
 
-    //ÈÕÖ¾´òÓ¡ÈÕÆÚ
+    //æ—¥å¿—æ‰“å°æ—¥æœŸ
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    //ÈÕÖ¾´òÓ¡ÈÕÆÚ 2
+    //æ—¥å¿—æ‰“å°æ—¥æœŸ 2
     private static SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("HH:mm:ss");
 
-    //Ä¬ÈÏÎÄ¼şLog ÎÄ¼şÃû
+    //é»˜è®¤æ–‡ä»¶Log æ–‡ä»¶å
     private static SimpleDateFormat fileSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    //µ¥Ïß³Ì ÓÃĞ´ÎÄ¼ş ·ÀÖ¹ anr
+    //å•çº¿ç¨‹ ç”¨å†™æ–‡ä»¶ é˜²æ­¢ anr
     private static ExecutorService mSingleExecutors = Executors.newSingleThreadExecutor();
     public static final int INDEX = 5;
 
@@ -171,16 +171,16 @@ public class ZLog {
     private static Config defaultConfig() {
         Builder builder = newBuilder();
 
-        // ·ÇÑ­»·£¬Ö»ÊÇÎªÁË¼õÉÙ·ÖÖ§Ëõ½øÉî¶È
+        // éå¾ªç¯ï¼Œåªæ˜¯ä¸ºäº†å‡å°‘åˆ†æ”¯ç¼©è¿›æ·±åº¦
         do {
             String state = Environment.getExternalStorageState();
-            // Î´°²×° SD ¿¨
+            // æœªå®‰è£… SD å¡
             if (!Environment.MEDIA_MOUNTED.equals(state)) {
                 Log.w(TAG, "Not mount SD card!");
                 break;
             }
 
-            // SD ¿¨²»¿ÉĞ´
+            // SD å¡ä¸å¯å†™
             if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                 Log.w(TAG, "Not allow write SD card!");
                 break;
@@ -196,8 +196,8 @@ public class ZLog {
                 break;
             }
 
-            // Ö»ÓĞ´æÔÚÍâ²¿ SD ¿¨ÇÒ¿ÉĞ´ÈëµÄÇé¿öÏÂ²ÅÔÊĞí±£´æÈÕÖ¾ÎÄ¼şµ½Ö¸¶¨Ä¿Â¼Â·¾¶ÏÂ
-            // Ã»ÓĞÖ¸¶¨ÈÕÖ¾ÎÄ¼ş´æ·ÅÎ»ÖÃµÄ»°£¬¾ÍĞ´µ½Ä¬ÈÏÎ»ÖÃ£¬¼´ µ±Ç°Ó¦ÓÃ SD ¿¨¸ùÄ¿Â¼ÏÂµÄ Cache/LogTransaction Ä¿Â¼ÖĞ
+            // åªæœ‰å­˜åœ¨å¤–éƒ¨ SD å¡ä¸”å¯å†™å…¥çš„æƒ…å†µä¸‹æ‰å…è®¸ä¿å­˜æ—¥å¿—æ–‡ä»¶åˆ°æŒ‡å®šç›®å½•è·¯å¾„ä¸‹
+            // æ²¡æœ‰æŒ‡å®šæ—¥å¿—æ–‡ä»¶å­˜æ”¾ä½ç½®çš„è¯ï¼Œå°±å†™åˆ°é»˜è®¤ä½ç½®ï¼Œå³ å½“å‰åº”ç”¨ SD å¡æ ¹ç›®å½•ä¸‹çš„ Cache/LogTransaction ç›®å½•ä¸­
             String strSaveLogPath = builder.logSavePath;
 
             checkSaveLogPath(strSaveLogPath);
@@ -209,7 +209,7 @@ public class ZLog {
     private static void checkSaveLogPath(@NonNull String strSaveLogPath) {
         if ("".equals(sLogFolderPath.trim())) {
             File fileSaveLogFolderPath = new File(strSaveLogPath);
-            // ±£´æÈÕÖ¾ÎÄ¼şµÄÂ·¾¶²»´æÔÚµÄ»°£¬¾Í´´½¨Ëü
+            // ä¿å­˜æ—¥å¿—æ–‡ä»¶çš„è·¯å¾„ä¸å­˜åœ¨çš„è¯ï¼Œå°±åˆ›å»ºå®ƒ
             if (!fileSaveLogFolderPath.exists()) {
                 boolean mkdirs = fileSaveLogFolderPath.mkdirs();
                 if (mkdirs) {
@@ -219,7 +219,7 @@ public class ZLog {
                 }
             }
 
-            // Ö¸¶¨ÈÕÖ¾ÎÄ¼ş±£´æµÄÂ·¾¶£¬ÎÄ¼şÃûÓÉÄÚ²¿°´ÈÕÆÚÊ±¼äĞÎÊ½
+            // æŒ‡å®šæ—¥å¿—æ–‡ä»¶ä¿å­˜çš„è·¯å¾„ï¼Œæ–‡ä»¶åç”±å†…éƒ¨æŒ‰æ—¥æœŸæ—¶é—´å½¢å¼
             sLogFolderPath = strSaveLogPath;
         }
     }
@@ -253,7 +253,7 @@ public class ZLog {
     }
 
 
-    //1.¿ØÖÆÌ¨Log
+    //1.æ§åˆ¶å°Log
     public static void v(String tag, Object msg) {
         consoleLog(SHOW_VERBOSE_LOG, msg, tag);
     }
@@ -302,7 +302,7 @@ public class ZLog {
         consoleLog(SHOW_JSON_LOG, msg, tag);
     }
 
-    //2.½öÊä³öµ½Ä¬ÈÏLogÎÄ¼ş
+    //2.ä»…è¾“å‡ºåˆ°é»˜è®¤Logæ–‡ä»¶
 
     public static void vv(final Object msg, final String... tag) {
         writeLog(SHOW_VERBOSE_LOG, msg, null, tag);
@@ -348,17 +348,17 @@ public class ZLog {
         writeLog(SHOW_JSON_LOG, msg, null, tag);
     }
 
-    //3.¿ØÖÆÌ¨ + ÎÄ¼şLog
+    //3.æ§åˆ¶å° + æ–‡ä»¶Log
     /**
-     * 3.¿ØÖÆÌ¨ + ÎÄ¼şLog
+     * 3.æ§åˆ¶å° + æ–‡ä»¶Log
      *
      * @param msg
      * @param tag
      */
     public static void vvv(final Object msg, final String... tag) {
-        //¿ØÖÆÌ¨
+        //æ§åˆ¶å°
         consoleLog(SHOW_VERBOSE_LOG, msg, tag);
-        //ÎÄ¼şLog
+        //æ–‡ä»¶Log
         writeLog(SHOW_VERBOSE_LOG, msg, null, tag);
     }
 
@@ -386,22 +386,22 @@ public class ZLog {
     }
 
     /**
-     * 3.¿ØÖÆÌ¨ + ÎÄ¼şLog
+     * 3.æ§åˆ¶å° + æ–‡ä»¶Log
      *
      * @param msg
      * @param tag
      */
     public static void cfjson(final Object msg, final String... tag) {
-        //¿ØÖÆÌ¨log
+        //æ§åˆ¶å°log
         consoleLog(SHOW_JSON_LOG, msg, tag);
-        //ÎÄ¼şLog
+        //æ–‡ä»¶Log
         writeLog(SHOW_JSON_LOG, msg, null, tag);
     }
 
-//4.Ö¸¶¨LogÎÄ¼şÃû,Êä³öLog µ½ÎÄ¼ş
+//4.æŒ‡å®šLogæ–‡ä»¶å,è¾“å‡ºLog åˆ°æ–‡ä»¶
 
     /**
-     * 4.Ö¸¶¨LogÎÄ¼şÃû,½öÊä³öLog µ½ÎÄ¼ş
+     * 4.æŒ‡å®šLogæ–‡ä»¶å,ä»…è¾“å‡ºLog åˆ°æ–‡ä»¶
      *
      * @param msg
      * @param logFileName
@@ -428,20 +428,20 @@ public class ZLog {
     }
 
     /**
-     * 4.Ö¸¶¨LogÎÄ¼şÃû,½öÊä³öLog µ½ÎÄ¼ş
+     * 4.æŒ‡å®šLogæ–‡ä»¶å,ä»…è¾“å‡ºLog åˆ°æ–‡ä»¶
      *
      * @param msg
-     * @param logFileName ÈÕÖ¾ÎÄ¼şÃû
+     * @param logFileName æ—¥å¿—æ–‡ä»¶å
      * @param tag
      */
     public static void ffjson(final String msg, @Nullable final String logFileName, final String... tag) {
         writeLog(SHOW_JSON_LOG, msg, logFileName, tag);
     }
 
-    //4.¿ØÖÆÌ¨ + Ö¸¶¨LogÎÄ¼şÃû,ÇÒÊä³öLog µ½ÎÄ¼ş
+    //4.æ§åˆ¶å° + æŒ‡å®šLogæ–‡ä»¶å,ä¸”è¾“å‡ºLog åˆ°æ–‡ä»¶
 
     /**
-     * 4.¿ØÖÆÌ¨ + Ö¸¶¨LogÎÄ¼şÃû,ÇÒÊä³öLog µ½ÎÄ¼ş
+     * 4.æ§åˆ¶å° + æŒ‡å®šLogæ–‡ä»¶å,ä¸”è¾“å‡ºLog åˆ°æ–‡ä»¶
      *
      * @param msg
      * @param logFileName
@@ -479,7 +479,7 @@ public class ZLog {
     }
 
     /**
-     * 4.¿ØÖÆÌ¨ + Ö¸¶¨LogÎÄ¼şÃû,ÇÒÊä³öLog µ½ÎÄ¼ş
+     * 4.æ§åˆ¶å° + æŒ‡å®šLogæ–‡ä»¶å,ä¸”è¾“å‡ºLog åˆ°æ–‡ä»¶
      *
      * @param msg
      * @param logFileName
@@ -493,35 +493,35 @@ public class ZLog {
 
 
     /**
-     * ½«msg Ğ´ÈëÈÕÖ¾ÎÄ¼ş
+     * å°†msg å†™å…¥æ—¥å¿—æ–‡ä»¶
      *
      * @param msg
      */
     private static void saveLog2File(String msg) {
-        // µÃµ½µ±Ç°ÈÕÆÚÊ±¼äµÄÖ¸¶¨¸ñÊ½×Ö·û´®
+        // å¾—åˆ°å½“å‰æ—¥æœŸæ—¶é—´çš„æŒ‡å®šæ ¼å¼å­—ç¬¦ä¸²
         String strDateTimeFileName = fileSimpleDateFormat.format(new Date());
         saveLog2File(msg, strDateTimeFileName + LOGFILE_SUFFIX);
     }
 
     /**
-     * ½«msg Ğ´ÈëÈÕÖ¾ÎÄ¼ş
+     * å°†msg å†™å…¥æ—¥å¿—æ–‡ä»¶
      *
      * @param msg
-     * @param logFileName log ÎÄ¼şÃû
+     * @param logFileName log æ–‡ä»¶å
      */
     private static void saveLog2File(String msg, String logFileName) {
         FileWriter objFilerWriter = null;
         BufferedWriter objBufferedWriter = null;
 
-        do { // ·ÇÑ­»·£¬Ö»ÊÇÎªÁË¼õÉÙ·ÖÖ§Ëõ½øÉî¶È
+        do { // éå¾ªç¯ï¼Œåªæ˜¯ä¸ºäº†å‡å°‘åˆ†æ”¯ç¼©è¿›æ·±åº¦
             String state = Environment.getExternalStorageState();
-            // Î´°²×° SD ¿¨
+            // æœªå®‰è£… SD å¡
             if (!Environment.MEDIA_MOUNTED.equals(state)) {
                 Log.d(TAG, "Not mount SD card!");
                 break;
             }
 
-            // SD ¿¨²»¿ÉĞ´
+            // SD å¡ä¸å¯å†™
             if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                 Log.d(TAG, "Not allow write SD card!");
                 break;
@@ -532,7 +532,7 @@ public class ZLog {
 
 
                 File fileLogFilePath = new File(sLogFolderPath, logFileName);
-                // Èç¹ûÈÕÖ¾ÎÄ¼ş²»´æÔÚ£¬Ôò´´½¨Ëü
+                // å¦‚æœæ—¥å¿—æ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»ºå®ƒ
                 if (!fileLogFilePath.exists()) {
                     try {
                         fileLogFilePath.createNewFile();
@@ -542,14 +542,14 @@ public class ZLog {
                     }
                 }
 
-                // Èç¹ûÖ´ĞĞµ½Õâ²½ÈÕÖ¾ÎÄ¼ş»¹²»´æÔÚ£¬¾Í²»Ğ´ÈÕÖ¾µ½ÎÄ¼şÁË
+                // å¦‚æœæ‰§è¡Œåˆ°è¿™æ­¥æ—¥å¿—æ–‡ä»¶è¿˜ä¸å­˜åœ¨ï¼Œå°±ä¸å†™æ—¥å¿—åˆ°æ–‡ä»¶äº†
                 if (!fileLogFilePath.exists()) {
                     Log.d(TAG, "Create log file failed!");
                     break;
                 }
 
                 try {
-                    objFilerWriter = new FileWriter(fileLogFilePath, true); // ĞøĞ´²»¸²¸Ç
+                    objFilerWriter = new FileWriter(fileLogFilePath, true); // ç»­å†™ä¸è¦†ç›–
                 } catch (IOException e1) {
                     Log.d(TAG, "New FileWriter Instance failed");
                     e1.printStackTrace();
@@ -594,7 +594,7 @@ public class ZLog {
      * @param tagArgs
      */
     private static void printLog(int type, Object objectMsg, @Nullable String... tagArgs) {
-        //µ±Ç°Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+        //å½“å‰çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
         int index = 4;
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         final StackTraceElement stackTraceElement = stackTrace[index];
@@ -687,7 +687,7 @@ public class ZLog {
                 String[] lines = message.split(LINE_SEPARATOR);
                 StringBuilder jsonContent = new StringBuilder();
                 for (String line : lines) {
-                    jsonContent.append("¨U ").append(line).append(LINE_SEPARATOR);
+                    jsonContent.append("â•‘ ").append(line).append(LINE_SEPARATOR);
                 }
                 Log.d(JSON + tagBuilder.toString(), jsonContent.toString());
                 printLine(JSON + tagBuilder.toString(), false);
@@ -698,7 +698,7 @@ public class ZLog {
     }
 
     /**
-     * Ğ´Log µ½ÎÄ¼ş
+     * å†™Log åˆ°æ–‡ä»¶
      *
      * @param logLevel
      * @param msg
@@ -708,7 +708,7 @@ public class ZLog {
     private static void writeLog(@LockLevel final int logLevel, final Object msg, @Nullable final String logFileName, final String... tag) {
         if (OPERATION_BIT != (logLevel &
                 m_cFileSaveLogType)) {
-            //µ±Ç°Ö÷Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+            //å½“å‰ä¸»çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
             final StackTraceElement stackTraceElement = getStackTraceElement(INDEX);
             mSingleExecutors.execute(new Runnable() {
                 @Override
@@ -723,7 +723,7 @@ public class ZLog {
     public static void writeLog(@LockLevel final int logLevel, int INDEX, final Object msg, @Nullable final String logFileName, final String... tag) {
         if (OPERATION_BIT != (logLevel &
                 m_cFileSaveLogType)) {
-            //µ±Ç°Ö÷Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+            //å½“å‰ä¸»çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
             final StackTraceElement stackTraceElement = getStackTraceElement(INDEX);
             mSingleExecutors.execute(new Runnable() {
                 @Override
@@ -736,24 +736,24 @@ public class ZLog {
     }
 
     /**
-     * Êä³ö¿ØÖÆÌ¨ÈÕÖ¾
+     * è¾“å‡ºæ§åˆ¶å°æ—¥å¿—
      *
      * @param logLevel
      * @param msg
      * @param tag
      */
     private static void consoleLog(@LockLevel final int logLevel, Object msg, String... tag) {
-        //µ±Ç°Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+        //å½“å‰çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
         consoleLog(logLevel, getStackTraceElement(INDEX), msg, tag);
     }
 
     public static void consoleLog(@LockLevel final int logLevel, int INDEX, Object msg, String[] tag) {
-        //µ±Ç°Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+        //å½“å‰çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
         consoleLog(logLevel, getStackTraceElement(INDEX), msg, tag);
     }
 
     /**
-     * Êä³ö¿ØÖÆÌ¨ÈÕÖ¾
+     * è¾“å‡ºæ§åˆ¶å°æ—¥å¿—
      *
      * @param logLevel
      * @param msg
@@ -777,7 +777,7 @@ public class ZLog {
     }
 
     private static StackTraceElement getStackTraceElement(int index) {
-        //µ±Ç°Ïß³ÌµÄ¶ÑÕ»Çé¿ö
+        //å½“å‰çº¿ç¨‹çš„å †æ ˆæƒ…å†µ
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         return stackTrace[index];
     }
@@ -814,13 +814,13 @@ public class ZLog {
         methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
 
         StringBuilder stringBuilder = new StringBuilder();
-        // µÃµ½µ±Ç°ÈÕÆÚÊ±¼äµÄÖ¸¶¨¸ñÊ½×Ö·û´®
+        // å¾—åˆ°å½“å‰æ—¥æœŸæ—¶é—´çš„æŒ‡å®šæ ¼å¼å­—ç¬¦ä¸²
         String strDateTimeLogHead = simpleDateFormat.format(new Date());
         switch (m_cOutputFormat){
             case LOG_OUTPUT_FORMAT_2:
-                // µÃµ½µ±Ç°ÈÕÆÚÊ±¼äµÄÖ¸¶¨¸ñÊ½×Ö·û´®
+                // å¾—åˆ°å½“å‰æ—¥æœŸæ—¶é—´çš„æŒ‡å®šæ ¼å¼å­—ç¬¦ä¸²
                 strDateTimeLogHead = simpleDateFormat2.format(new Date());
-                // ½«±êÇ©¡¢ÈÕÆÚÊ±¼äÍ·¡¢ÈÕÖ¾ĞÅÏ¢Ìå½áºÏÆğÀ´
+                // å°†æ ‡ç­¾ã€æ—¥æœŸæ—¶é—´å¤´ã€æ—¥å¿—ä¿¡æ¯ä½“ç»“åˆèµ·æ¥
                 stringBuilder
                         .append(tagBuilder.toString())
                         .append(" ")
@@ -843,9 +843,9 @@ public class ZLog {
                 stringBuilder.append(LINE_SEPARATOR + LINE_SEPARATOR);
                 break;
             case LOG_OUTPUT_FORMAT_3:
-                // µÃµ½µ±Ç°ÈÕÆÚÊ±¼äµÄÖ¸¶¨¸ñÊ½×Ö·û´®
+                // å¾—åˆ°å½“å‰æ—¥æœŸæ—¶é—´çš„æŒ‡å®šæ ¼å¼å­—ç¬¦ä¸²
                 strDateTimeLogHead = simpleDateFormat2.format(new Date());
-                // ½«±êÇ©¡¢ÈÕÆÚÊ±¼äÍ·¡¢ÈÕÖ¾ĞÅÏ¢Ìå½áºÏÆğÀ´
+                // å°†æ ‡ç­¾ã€æ—¥æœŸæ—¶é—´å¤´ã€æ—¥å¿—ä¿¡æ¯ä½“ç»“åˆèµ·æ¥
                 stringBuilder
                         .append(tagBuilder.toString())
                         .append(" ")
@@ -869,7 +869,7 @@ public class ZLog {
                 break;
             case LOG_OUTPUT_FORMAT_1:
             default:
-                // ½«±êÇ©¡¢ÈÕÆÚÊ±¼äÍ·¡¢ÈÕÖ¾ĞÅÏ¢Ìå½áºÏÆğÀ´
+                // å°†æ ‡ç­¾ã€æ—¥æœŸæ—¶é—´å¤´ã€æ—¥å¿—ä¿¡æ¯ä½“ç»“åˆèµ·æ¥
                 stringBuilder
                         .append(tagBuilder.toString())
                         .append(" ")
@@ -896,7 +896,7 @@ public class ZLog {
                     stringBuilder.append(msg);
                 }
                 stringBuilder.append(LINE_SEPARATOR + LINE_SEPARATOR);
-                    break;
+                break;
         }
 
         switch (type) {
@@ -960,14 +960,14 @@ public class ZLog {
 
                 stringBuilder.append(JSON);
                 stringBuilder.append(LINE_SEPARATOR);
-                stringBuilder.append("¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T");
+                stringBuilder.append("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
                 message = stringBuilder.toString() + LINE_SEPARATOR + message;
                 String[] lines = message.split(LINE_SEPARATOR);
                 StringBuilder jsonContent = new StringBuilder();
                 for (String line : lines) {
-                    jsonContent.append("¨U ").append(line).append(LINE_SEPARATOR);
+                    jsonContent.append("â•‘ ").append(line).append(LINE_SEPARATOR);
                 }
-                jsonContent.append("¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T");
+                jsonContent.append("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
                 if (TextUtils.isEmpty(logFileName)) {
                     saveLog2File(jsonContent.toString());
                 } else {
@@ -982,9 +982,9 @@ public class ZLog {
 
     private static void printLine(String tag, boolean isTop) {
         if (isTop) {
-            Log.d(tag, "¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T");
+            Log.d(tag, "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
         } else {
-            Log.d(tag, "¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T");
+            Log.d(tag, "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
         }
     }
 

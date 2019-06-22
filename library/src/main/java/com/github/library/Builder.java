@@ -9,11 +9,11 @@ import java.io.File;
  * kgd.zhen
  */
 public class Builder {
-    public String logSavePath = "";     //ÈÕÖ¾±£´æÂ·¾¶
-    public Character logCatLogLevel;    //¿ØÖÆÌ¨Êä³öÈÕÖ¾µÈ¼¶
-    public Character fileLogLevel;      //±£´æÈÕÖ¾µÈ¼¶
-    public Character fileOutFormat;     //±£´æÈÕÖ¾¸ñÊ½
-    public boolean dbFlowStatistics; //Á÷Á¿Í³¼Æ
+    public String logSavePath = "";     //æ—¥å¿—ä¿å­˜è·¯å¾„
+    public Character logCatLogLevel;    //æ§åˆ¶å°è¾“å‡ºæ—¥å¿—ç­‰çº§
+    public Character fileLogLevel;      //ä¿å­˜æ—¥å¿—ç­‰çº§
+    public Character fileOutFormat;     //ä¿å­˜æ—¥å¿—æ ¼å¼
+    public boolean dbFlowStatistics; //æµé‡ç»Ÿè®¡
 
 
     public Config build() {

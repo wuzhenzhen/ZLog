@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by wzz on 2019/04/23.
  * kgd.zhen@gmail.com
- * Êı¾İ¿âÊµÀı²Ù×÷Àà
+ * æ•°æ®åº“å®ä¾‹æ“ä½œç±»
  */
 public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
 
@@ -38,7 +38,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    //»ñÈ¡×îºó²åÈëµÄÒ»ÌõÊı¾İ
+    //è·å–æœ€åæ’å…¥çš„ä¸€æ¡æ•°æ®
     public TrafficDayDetail queryByLastTime() {
         QueryBuilder<TrafficDayDetail> queryBuilder =
                 getDaoSession().getTrafficDayDetailDao().queryBuilder();
@@ -51,7 +51,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    //»ñÈ¡×òÌì×îºóÒ»ÌõÊı¾İ
+    //è·å–æ˜¨å¤©æœ€åä¸€æ¡æ•°æ®
     public TrafficDayDetail queryByYesterday() {
         long currentTime = System.currentTimeMillis();
         QueryBuilder<TrafficDayDetail> queryBuilder =
@@ -66,7 +66,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
-    // ²éÑ¯Ä³ÌìµÄÊı¾İ×ÜÁ÷Á¿
+    // æŸ¥è¯¢æŸå¤©çš„æ•°æ®æ€»æµé‡
     public long querySumFlow(long timeMillis){
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
         String startTime = String.valueOf(getDayStartTime(timeMillis,0));
@@ -86,7 +86,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return sumFlow;
     }
 
-    // ²éÑ¯×òÌìÊ¹ÓÃµÄ×ÜÁ÷Á¿Çé¿ö
+    // æŸ¥è¯¢æ˜¨å¤©ä½¿ç”¨çš„æ€»æµé‡æƒ…å†µ
     public long querySumFlowYesterday(){
         long currentTime = System.currentTimeMillis();
         String startTime = String.valueOf(getDayStartTime(currentTime, -1));
@@ -123,9 +123,9 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
     }
 
     /**
-     *   ·µ»ØÄ³ÌìµÄ¿ªÊ¼Ê±¼ä long £¨Èç 2019-04-24 00:00:00£©
-     *   Èç£º getDayStartTime(System.currentTimeMillis(),-1);    //·µ»Ø×òÌìµÄ¿ªÊ¼Ê±¼ä
-     *        getDayStartTime(System.currentTimeMillis(),0);    //·µ»Øµ±ÌìµÄ¿ªÊ¼Ê±¼ä
+     *   è¿”å›æŸå¤©çš„å¼€å§‹æ—¶é—´ long ï¼ˆå¦‚ 2019-04-24 00:00:00ï¼‰
+     *   å¦‚ï¼š getDayStartTime(System.currentTimeMillis(),-1);    //è¿”å›æ˜¨å¤©çš„å¼€å§‹æ—¶é—´
+     *        getDayStartTime(System.currentTimeMillis(),0);    //è¿”å›å½“å¤©çš„å¼€å§‹æ—¶é—´
      * @param timeMillis
      * @param day
      * @return
@@ -138,17 +138,17 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
-        System.out.println("¿ªÊ¼Ê±¼ä£º"+calendar.getTime());
+        System.out.println("å¼€å§‹æ—¶é—´ï¼š"+calendar.getTime());
         return calendar.getTimeInMillis();
     }
 
     /**
-     * ·µ»ØÄ³ÌìµÄ½áÊøÊ±¼ä long £¨Èç 2019-04-24 23:59:59£©
+     * è¿”å›æŸå¤©çš„ç»“æŸæ—¶é—´ long ï¼ˆå¦‚ 2019-04-24 23:59:59ï¼‰
      * @param timeMillis
      * @param day
      * @return
-     *   Èç£º getDayEndTime(System.currentTimeMillis(),-1);    //·µ»Ø×òÌìµÄ½áÊøÊ±¼ä
-     *        getDayEndTime(System.currentTimeMillis(),0);    //·µ»Øµ±ÌìµÄ½áÊøÊ±¼ä
+     *   å¦‚ï¼š getDayEndTime(System.currentTimeMillis(),-1);    //è¿”å›æ˜¨å¤©çš„ç»“æŸæ—¶é—´
+     *        getDayEndTime(System.currentTimeMillis(),0);    //è¿”å›å½“å¤©çš„ç»“æŸæ—¶é—´
      */
     public static long getDayEndTime(long timeMillis, int day){
         Calendar calendar = Calendar.getInstance();
@@ -158,12 +158,12 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
         calendar.set(Calendar.MILLISECOND,999);
-        System.out.println("½áÊøÊ±¼ä£º"+calendar.getTime());
+        System.out.println("ç»“æŸæ—¶é—´ï¼š"+calendar.getTime());
         return calendar.getTimeInMillis();
     }
 
     /**
-     *  É¾³ı ¼¸Ìì Ö®Ç°µÄÊı¾İ£¬
+     *  åˆ é™¤ å‡ å¤© ä¹‹å‰çš„æ•°æ®ï¼Œ
      * @param  day
      */
     public void delBeforeTime(int day){

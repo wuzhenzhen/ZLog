@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Generated;
 /**
  * Created by wzz on 2019/04/22.
  * wuzhenzhen@tiamaes.com
- * Á÷Á¿ Ã÷Ï¸Êı¾İ
+ * æµé‡ æ˜ç»†æ•°æ®
  */
 @Entity
 public class TrafficDetail {
@@ -16,22 +16,22 @@ public class TrafficDetail {
     @Unique
     private Long id;
 
-    private String packageName;  //°üÃû
-    private long startTime;      //¿ª»úÊ±¼ä
-    private int uid;    //½ø³Ìid
+    private String packageName;  //åŒ…å
+    private long startTime;      //å¼€æœºæ—¶é—´
+    private int uid;    //è¿›ç¨‹id
     private long uidRX;
     private long uidTX;
-    private long mobileRX;    //½ÓÊÕÊı¾İ°ü
-    private long mobileTX;    //·¢ËÍÊı¾İ°ü
-    private long totalRX;    //½ÓÊÕÊı¾İ°ü
-    private long totalTX;    //·¢ËÍÊı¾İ°ü
-    private long total; //×ÜÊı¾İ°ü
-    private long lastTime; //×îºóÒ»´Î¸üĞÂÊ±¼ä£¬ Ò²¿ÉÒÔÊÇ²åÈëÊ±¼ä
+    private long mobileRX;    //æ¥æ”¶æ•°æ®åŒ…
+    private long mobileTX;    //å‘é€æ•°æ®åŒ…
+    private long totalRX;    //æ¥æ”¶æ•°æ®åŒ…
+    private long totalTX;    //å‘é€æ•°æ®åŒ…
+    private long total; //æ€»æ•°æ®åŒ…
+    private long lastTime; //æœ€åä¸€æ¬¡æ›´æ–°æ—¶é—´ï¼Œ ä¹Ÿå¯ä»¥æ˜¯æ’å…¥æ—¶é—´
 
     @Generated(hash = 433901232)
     public TrafficDetail(Long id, String packageName, long startTime, int uid,
-            long uidRX, long uidTX, long mobileRX, long mobileTX, long totalRX,
-            long totalTX, long total, long lastTime) {
+                         long uidRX, long uidTX, long mobileRX, long mobileTX, long totalRX,
+                         long totalTX, long total, long lastTime) {
         this.id = id;
         this.packageName = packageName;
         this.startTime = startTime;
