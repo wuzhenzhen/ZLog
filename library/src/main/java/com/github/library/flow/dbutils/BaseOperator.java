@@ -24,7 +24,7 @@ public abstract class BaseOperator<T> {
 
     public BaseOperator(){
         daoSession = DaoManager.INSTANCE.getDaoSession();
-        DaoManager.INSTANCE.setDebug(true);
+        DaoManager.INSTANCE.setDebug(false);
     }
 
     public DaoSession getDaoSession(){
