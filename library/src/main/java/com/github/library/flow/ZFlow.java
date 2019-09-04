@@ -191,8 +191,14 @@ public class ZFlow {
                         ZLog.eee("--impossibility error--");
                     }
                 }
-            }else { // 最后一次记录时间 与 开机时间不致，说明是第二天开机运行的
+            }else {
+                // 最后一次记录时间 与 开机时间不一致，说明是
+                // a. 今天第一次开机(昨天或之前运行过)    -- 正常
+                // b. 时区变化引起                        -- 时区错误
+                // c. 手动修改系统时间造成 当天之后（明天，后天等） 有数据       --非法操作
+
                 //重新插入一条记录
+//                startTime = System.currentTimeMillis();  // 针对b
                 tdd = new TrafficDayDetail();
                 tdd.setStartTime(startTime);
 
@@ -201,7 +207,7 @@ public class ZFlow {
                 tdd.setTotal(total);
                 tdd.setLastTime(System.currentTimeMillis());
                 DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
-                ZLog.iii("--program run another day--");
+                ZLog.iii("--program run another day--"+lastYMD+"=="+nowYMD+"=="+startTimeYMD);
             }
         }
     }

@@ -51,6 +51,22 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
+    //获取当天最后插入的一条数据
+    public TrafficDayDetail queryByCurrentDay(){
+        long currentTime = System.currentTimeMillis();
+        QueryBuilder<TrafficDayDetail> queryBuilder =
+                getDaoSession().getTrafficDayDetailDao().queryBuilder();
+        List<TrafficDayDetail> entityAngleRaws = queryBuilder
+                .where(TrafficDayDetailDao.Properties.StartTime.ge(getDayStartTime(currentTime, 0)),
+                        TrafficDayDetailDao.Properties.StartTime.le(getDayEndTime(currentTime,0)))
+                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
+                .list();
+        if (entityAngleRaws != null && entityAngleRaws.size() > 0){
+            return  entityAngleRaws.get(0);
+        }
+        return null;
+    }
+
     //获取昨天最后一条数据
     public TrafficDayDetail queryByYesterday() {
         long currentTime = System.currentTimeMillis();
@@ -74,11 +90,14 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
         long sumFlow = 0;
         try{
-            if (c.moveToFirst()) {
+            if (c != null && c.moveToFirst()) {
                 do {
                     sumFlow = c.getLong(0);
                 } while (c.moveToNext());
             }
+        } catch (Exception e){
+            System.err.println("#sumFlow#"+e.getLocalizedMessage());
+            e.printStackTrace();
         } finally {
             c.close();
         }
@@ -96,11 +115,14 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
         long sumFlow = 0;
         try{
-            if (c.moveToFirst()) {
+            if (c!= null && c.moveToFirst()) {
                 do {
                     sumFlow = c.getLong(0);
                 } while (c.moveToNext());
             }
+        } catch (Exception e){
+            System.err.println("#sumFlow#"+e.getLocalizedMessage());
+            e.printStackTrace();
         } finally {
             c.close();
         }
@@ -134,7 +156,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + day);
-        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
@@ -154,7 +176,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeMillis);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + day);
-        calendar.set(Calendar.HOUR,23);
+        calendar.set(Calendar.HOUR_OF_DAY,23);
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
         calendar.set(Calendar.MILLISECOND,999);
