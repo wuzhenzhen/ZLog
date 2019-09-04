@@ -2,6 +2,7 @@ package com.github.library.flow.dbutils;
 
 import android.database.Cursor;
 
+import com.github.library.ZLog;
 import com.github.library.flow.entity.TrafficDayDetail;
 import com.github.library.flow.greendao.TrafficDayDetailDao;
 
@@ -87,6 +88,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
         String startTime = String.valueOf(getDayStartTime(timeMillis,0));
         String endTime = String.valueOf(getDayEndTime(timeMillis,0));
+        ZLog.iii("--querySumFlow--"+sql+" "+startTime+"="+endTime);
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
         long sumFlow = 0;
         try{
@@ -112,6 +114,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         String endTime = String.valueOf(getDayEndTime(currentTime, -1));
 //        String sql = "select count(TOTAL) countt, sum(TOTAL) sumt from TRAFFIC_DAY_DETAIL where start_time >= 1556035200000 and start_time <= 1556121599000";
         String sql = "select sum(TOTAL) sumt FROM TRAFFIC_DAY_DETAIL WHERE START_TIME >= ? and START_TIME <= ?";
+        ZLog.iii("--querySumFlowYesterday--"+sql+" "+startTime+"="+endTime);
         Cursor c = getDaoSession().getTrafficDayDetailDao().getDatabase().rawQuery(sql, new String[]{startTime, endTime});
         long sumFlow = 0;
         try{
@@ -160,7 +163,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
-        System.out.println("开始时间："+calendar.getTime());
+        System.out.println("开始时间："+calendar.getTime()+"--"+calendar.getTimeInMillis());
         return calendar.getTimeInMillis();
     }
 
@@ -180,7 +183,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         calendar.set(Calendar.MINUTE,59);
         calendar.set(Calendar.SECOND,59);
         calendar.set(Calendar.MILLISECOND,999);
-        System.out.println("结束时间："+calendar.getTime());
+        System.out.println("结束时间："+calendar.getTime()+"--"+calendar.getTimeInMillis());
         return calendar.getTimeInMillis();
     }
 
