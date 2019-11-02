@@ -41,7 +41,6 @@
 
         <service android:name="com.github.zftpserver.FsService" />
 
-        <service android:name="com.github.zftpserver.NsdService" />
     </application>
 
 </manifest>
