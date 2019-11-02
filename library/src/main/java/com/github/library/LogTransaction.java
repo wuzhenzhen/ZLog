@@ -1,6 +1,6 @@
 package com.github.library;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by wzz on 2019/03/02.

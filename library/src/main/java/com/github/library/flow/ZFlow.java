@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.TrafficStats;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.github.library.ZLog;
 import com.github.library.flow.dbutils.DaoUtils;
