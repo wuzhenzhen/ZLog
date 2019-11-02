@@ -49,7 +49,7 @@ dependencies {
 def _BASENAME = "ZLog";
 def _VERSION = "_V1.0.6";
 def _DestinationPath = "build"; //生成jar包的位置
-def zipFile = file('build/intermediates/intermediate-jars/release/classes.jar'); //待打包文件位置
+def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.jar'); //待打包文件位置
 
 //最好加上全局编码设置
 //tasks.withType(JavaCompile) {

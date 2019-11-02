@@ -2,9 +2,12 @@ package com.github.zlog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.github.library.ZLog;
 import com.github.library.flow.ZFlow;
+import com.github.zftpserver.FsService;
+import com.github.zftpserver.FsSettings;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,5 +79,17 @@ public class MainActivity extends AppCompatActivity {
         ZLog.eee("=========Flow==========end");
 
 
+
+    }
+
+    public void openFtp(View view){
+        ZLog.eee("====ftp=====openFtp==========");
+        FsService.start(this.getApplicationContext());
+
+    }
+
+    public void closeFtp(View view){
+        ZLog.eee("====ftp=====closeFtp==========");
+        FsService.stop();
     }
 }

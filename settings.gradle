@@ -1,1 +1,1 @@
-include ':app', ':library', ':zbase'
+include ':app', ':library', ':zbase', ':zftpserver'

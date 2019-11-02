@@ -21,6 +21,11 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
+
 }
 
 dependencies {
@@ -33,22 +38,22 @@ dependencies {
 
     implementation project(':library')
 }
+//
+//def _BASENAME = "ZBase";
+//def _VERSION = "_V1.0.0";
+//def _DestinationPath = "build"; //生成jar包的位置
+//def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.jar'); //待打包文件位置
+//
+//task deleteBuild(type:Delete){
+//    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
+//}
 
-def _BASENAME = "ZBase";
-def _VERSION = "_V1.0.0";
-def _DestinationPath = "build"; //生成jar包的位置
-def zipFile = file('build/intermediates/intermediate-jars/release/classes.jar'); //待打包文件位置
+//task makeJar(type:Jar){
+//    from zipTree(zipFile)
+//    from fileTree(dir:'src/main',includes:['assets/**']) //将assets目录打入jar包
+//    baseName = _BASENAME + _VERSION
+//    destinationDir = file(_DestinationPath)
+//}
 
-task deleteBuild(type:Delete){
-    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
-}
-
-task makeJar(type:Jar){
-    from zipTree(zipFile)
-    from fileTree(dir:'src/main',includes:['assets/**']) //将assets目录打入jar包
-    baseName = _BASENAME + _VERSION
-    destinationDir = file(_DestinationPath)
-}
-
-makeJar.dependsOn(deleteBuild, build)
+//makeJar.dependsOn(deleteBuild, build)
 
