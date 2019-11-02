@@ -17,13 +17,13 @@ public class App{
     public static void initContext(Context context){
         mContext = context;
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(FsService.ACTION_STARTED);
-        intentFilter.addAction(FsService.ACTION_STOPPED);
-        intentFilter.addAction(FsService.ACTION_FAILEDTOSTART);
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(FsService.ACTION_STARTED);
+//        intentFilter.addAction(FsService.ACTION_STOPPED);
+//        intentFilter.addAction(FsService.ACTION_FAILEDTOSTART);
 
 //        registerReceiver(new AutoConnect.ServerActionsReceiver(), intentFilter);
-        context.registerReceiver(new NsdService.ServerActionsReceiver(), intentFilter);
+//        context.registerReceiver(new NsdService.ServerActionsReceiver(), intentFilter);
 //        registerReceiver(new FsWidgetProvider(), intentFilter);
 
 //        AutoConnect.maybeStartService(this)
