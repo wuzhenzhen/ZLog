@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 public class CmdFEAT extends FtpCmd implements Runnable {
     private static final String TAG = CmdFEAT.class.getSimpleName();
@@ -30,7 +30,7 @@ public class CmdFEAT extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "run: Giving FEAT");
+        Cat.d(TAG, "run: Giving FEAT");
         sessionThread.writeString("211-Features supported by FTP Server\r\n");
         sessionThread.writeString(" UTF8\r\n");
         sessionThread.writeString(" MDTM\r\n");
@@ -45,7 +45,7 @@ public class CmdFEAT extends FtpCmd implements Runnable {
         sessionThread.writeString(" REST STREAM\r\n");
         sessionThread.writeString(" RANG STREAM\r\n");
         sessionThread.writeString("211 End\r\n");
-        Log.d(TAG, "run: Gave FEAT");
+        Cat.d(TAG, "run: Gave FEAT");
     }
 
 }

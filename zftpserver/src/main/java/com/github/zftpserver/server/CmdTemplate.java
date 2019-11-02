@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 public class CmdTemplate extends FtpCmd implements Runnable {
     private static final String TAG = CmdTemplate.class.getSimpleName();
@@ -33,7 +33,7 @@ public class CmdTemplate extends FtpCmd implements Runnable {
     @Override
     public void run() {
         sessionThread.writeString(message);
-        Log.i(TAG, "Template log message");
+        Cat.i(TAG, "Template log message");
     }
 
 }

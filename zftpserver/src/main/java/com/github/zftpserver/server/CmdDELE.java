@@ -19,11 +19,9 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
-
 import com.github.zftpserver.App;
 import com.github.zftpserver.MediaUpdater;
+import com.github.zftpserver.utils.Cat;
 import com.github.zftpserver.utils.FileUtil;
 
 import java.io.File;
@@ -41,7 +39,7 @@ public class CmdDELE extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "DELE executing");
+        Cat.d(TAG, "DELE executing");
         String param = getParameter(input);
         File storeFile = inputPathToChrootedFile(sessionThread.getChrootDir(), sessionThread.getWorkingDir(), param);
         String errString = null;
@@ -55,12 +53,12 @@ public class CmdDELE extends FtpCmd implements Runnable {
 
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.i(TAG, "DELE failed: " + errString.trim());
+            Cat.i(TAG, "DELE failed: " + errString.trim());
         } else {
             sessionThread.writeString("250 File successfully deleted\r\n");
             MediaUpdater.notifyFileDeleted(storeFile.getPath());
         }
-        Log.d(TAG, "DELE finished");
+        Cat.d(TAG, "DELE finished");
     }
 
 }

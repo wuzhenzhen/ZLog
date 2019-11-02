@@ -1,6 +1,6 @@
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class CmdSIZE extends FtpCmd {
 
     @Override
     public void run() {
-        Log.d(TAG, "SIZE executing");
+        Cat.d(TAG, "SIZE executing");
         String errString = null;
         String param = getParameter(input);
         long size = 0;
@@ -37,7 +37,7 @@ public class CmdSIZE extends FtpCmd {
             if (!target.exists()) {
                 errString = "550 Cannot get the SIZE of nonexistent object\r\n";
                 try {
-                    Log.i(TAG, "Failed getting size of: " + target.getCanonicalPath());
+                    Cat.i(TAG, "Failed getting size of: " + target.getCanonicalPath());
                 } catch (IOException e) {
                 }
                 break mainblock;
@@ -53,7 +53,7 @@ public class CmdSIZE extends FtpCmd {
         } else {
             sessionThread.writeString("213 " + size + "\r\n");
         }
-        Log.d(TAG, "SIZE complete");
+        Cat.d(TAG, "SIZE complete");
     }
 
 }

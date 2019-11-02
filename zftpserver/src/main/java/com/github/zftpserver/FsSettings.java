@@ -22,9 +22,9 @@ package com.github.zftpserver;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import com.github.zftpserver.server.FtpUser;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class FsSettings {
             chrootDir = new File("/");
         }
         if (!chrootDir.isDirectory()) {
-            Log.e(TAG, "getChrootDir: not a directory");
+            Cat.e(TAG, "getChrootDir: not a directory");
             // if this happens, we are screwed
             // we give it the application directory
             // but this will probably not be what the user wants

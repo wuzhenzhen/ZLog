@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.net.InetAddress;
 
@@ -33,23 +33,23 @@ public class CmdPASV extends FtpCmd implements Runnable {
     @Override
     public void run() {
         String cantOpen = "502 Couldn't open a port\r\n";
-        Log.d(TAG, "PASV running");
+        Cat.d(TAG, "PASV running");
         int port;
         if ((port = sessionThread.onPasv()) == 0) {
             // There was a problem opening a port
-            Log.e(TAG, "Couldn't open a port for PASV");
+            Cat.e(TAG, "Couldn't open a port for PASV");
             sessionThread.writeString(cantOpen);
             return;
         }
         InetAddress address = sessionThread.getDataSocketPasvIp();
         if (address == null) {
-            Log.e(TAG, "PASV IP string invalid");
+            Cat.e(TAG, "PASV IP string invalid");
             sessionThread.writeString(cantOpen);
             return;
         }
-        Log.d(TAG, "PASV sending IP: " + address.getHostAddress());
+        Cat.d(TAG, "PASV sending IP: " + address.getHostAddress());
         if (port < 1) {
-            Log.e(TAG, "PASV port number invalid");
+            Cat.e(TAG, "PASV port number invalid");
             sessionThread.writeString(cantOpen);
             return;
         }
@@ -64,6 +64,6 @@ public class CmdPASV extends FtpCmd implements Runnable {
         response.append(").\r\n");
         String responseString = response.toString();
         sessionThread.writeString(responseString);
-        Log.d(TAG, "PASV completed, sent: " + responseString);
+        Cat.d(TAG, "PASV completed, sent: " + responseString);
     }
 }

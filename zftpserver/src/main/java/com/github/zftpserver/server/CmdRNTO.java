@@ -20,9 +20,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 package com.github.zftpserver.server;
 
 import android.os.Build;
-import android.util.Log;
-
 import com.github.zftpserver.App;
+import com.github.zftpserver.utils.Cat;
 import com.github.zftpserver.utils.FileUtil;
 
 import java.io.File;
@@ -40,15 +39,15 @@ public class CmdRNTO extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "RNTO executing");
+        Cat.d(TAG, "RNTO executing");
         String param = getParameter(input);
         String errString = null;
         File toFile = null;
         mainblock:
         {
-            Log.i(TAG, "param: " + param);
+            Cat.i(TAG, "param: " + param);
             toFile = inputPathToChrootedFile(sessionThread.getChrootDir(), sessionThread.getWorkingDir(), param);
-            Log.i(TAG, "RNTO to file: " + toFile.getPath());
+            Cat.i(TAG, "RNTO to file: " + toFile.getPath());
             if (violatesChroot(toFile)) {
                 errString = "550 Invalid name or chroot violation\r\n";
                 break mainblock;
@@ -58,7 +57,7 @@ public class CmdRNTO extends FtpCmd implements Runnable {
                 errString = "550 Rename error, maybe RNFR not sent\r\n";
                 break mainblock;
             }
-            Log.i(TAG, "RNTO from file: " + fromFile.getPath());
+            Cat.i(TAG, "RNTO from file: " + fromFile.getPath());
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 // TODO: this code is working around a bug that java6 and before cannot
@@ -98,11 +97,11 @@ public class CmdRNTO extends FtpCmd implements Runnable {
         }
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.i(TAG, "RNFR failed: " + errString.trim());
+            Cat.i(TAG, "RNFR failed: " + errString.trim());
         } else {
             sessionThread.writeString("250 rename successful\r\n");
         }
         sessionThread.setRenameFrom(null);
-        Log.d(TAG, "RNTO finished");
+        Cat.d(TAG, "RNTO finished");
     }
 }

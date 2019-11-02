@@ -19,10 +19,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
-
 import com.github.zftpserver.App;
+import com.github.zftpserver.utils.Cat;
 import com.github.zftpserver.utils.FileUtil;
 
 import java.io.File;
@@ -40,7 +38,7 @@ public class CmdMKD extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "MKD executing");
+        Cat.d(TAG, "MKD executing");
         String param = getParameter(input);
         File toCreate;
         String errString = null;
@@ -69,11 +67,11 @@ public class CmdMKD extends FtpCmd implements Runnable {
         }
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.i(TAG, "MKD error: " + errString.trim());
+            Cat.i(TAG, "MKD error: " + errString.trim());
         } else {
             sessionThread.writeString("250 Directory created\r\n");
         }
-        Log.i(TAG, "MKD complete");
+        Cat.i(TAG, "MKD complete");
     }
 
 }

@@ -8,6 +8,8 @@ import com.github.library.ZLog;
 import com.github.library.flow.ZFlow;
 import com.github.zftpserver.FsService;
 import com.github.zftpserver.FsSettings;
+import com.github.zftpserver.FtpListener;
+import com.github.zftpserver.server.FtpUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,14 +79,46 @@ public class MainActivity extends AppCompatActivity {
         ZLog.iii("---flow="+ZFlow.getSumFlowYesterday());
         ZLog.iii("---flow="+ZFlow.getSumFlow(System.currentTimeMillis()));
         ZLog.eee("=========Flow==========end");
-
-
-
     }
 
     public void openFtp(View view){
         ZLog.eee("====ftp=====openFtp==========");
-        FsService.start(this.getApplicationContext());
+        if(FsSettings.getUser("ftp2") != null){
+            FsSettings.addUser(new FtpUser("ftp2","ftp2","\\")); //添加FTP用户名
+        }else{
+            ZLog.eee("====ftp=====openFtp=======already=exist=user===");
+        }
+        FsService.start(this.getApplicationContext(), new FtpListener() {
+            @Override
+            public void openFtp(int type, String message) {
+                ZLog.eee("==ftp==openFtp="+type+"--"+message);
+            }
+
+            @Override
+            public void closeFtp() {
+                ZLog.eee("==ftp==closeFtp=");
+            }
+
+            @Override
+            public void login(int type, String message) {
+                ZLog.eee("==ftp==login="+type+"--"+message);
+            }
+
+            @Override
+            public void addFile(String file) {
+                ZLog.eee("==ftp==addFile="+file);
+            }
+
+            @Override
+            public void delFile(String file) {
+                ZLog.eee("==ftp==delFile="+file);
+            }
+
+            @Override
+            public void log(String log) {
+                ZLog.ddd("##log##"+log);
+            }
+        });
 
     }
 

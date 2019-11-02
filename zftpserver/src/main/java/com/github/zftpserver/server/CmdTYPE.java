@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 public class CmdTYPE extends FtpCmd implements Runnable {
     private static final String TAG = CmdTYPE.class.getSimpleName();
@@ -34,7 +34,7 @@ public class CmdTYPE extends FtpCmd implements Runnable {
     @Override
     public void run() {
         String output;
-        Log.d(TAG, "TYPE executing");
+        Cat.d(TAG, "TYPE executing");
         String param = getParameter(input);
         if (param.equals("I") || param.equals("L 8")) {
             output = "200 Binary type set\r\n";
@@ -46,7 +46,7 @@ public class CmdTYPE extends FtpCmd implements Runnable {
             output = "503 Malformed TYPE command\r\n";
         }
         sessionThread.writeString(output);
-        Log.d(TAG, "TYPE complete");
+        Cat.d(TAG, "TYPE complete");
     }
 
 }

@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class CmdPWD extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "PWD executing");
+        Cat.d(TAG, "PWD executing");
         // We assume that the chroot restriction has been applied, and that
         // therefore the current directory is located somewhere within the
         // chroot directory. Therefore, we can just slice of the chroot
@@ -57,10 +57,10 @@ public class CmdPWD extends FtpCmd implements Runnable {
             sessionThread.writeString("257 \"" + currentDir + "\"\r\n");
         } catch (IOException e) {
             // This shouldn't happen unless our input validation has failed
-            Log.e(TAG, "PWD canonicalize");
+            Cat.e(TAG, "PWD canonicalize");
             sessionThread.closeSocket(); // should cause thread termination
         }
-        Log.d(TAG, "PWD complete");
+        Cat.d(TAG, "PWD complete");
     }
 
 }

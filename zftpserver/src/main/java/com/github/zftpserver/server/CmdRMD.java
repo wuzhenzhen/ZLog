@@ -19,10 +19,9 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
 import com.github.zftpserver.App;
 import com.github.zftpserver.MediaUpdater;
+import com.github.zftpserver.utils.Cat;
 import com.github.zftpserver.utils.FileUtil;
 
 import java.io.File;
@@ -40,7 +39,7 @@ public class CmdRMD extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "RMD executing");
+        Cat.d(TAG, "RMD executing");
         String param = getParameter(input);
         File toRemove;
         String errString = null;
@@ -70,11 +69,11 @@ public class CmdRMD extends FtpCmd implements Runnable {
         }
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.i(TAG, "RMD failed: " + errString.trim());
+            Cat.i(TAG, "RMD failed: " + errString.trim());
         } else {
             sessionThread.writeString("250 Removed directory\r\n");
         }
-        Log.d(TAG, "RMD finished");
+        Cat.d(TAG, "RMD finished");
     }
 
     /**
@@ -94,10 +93,10 @@ public class CmdRMD extends FtpCmd implements Runnable {
             for (File entry : toDelete.listFiles()) {
                 success &= recursiveDelete(entry);
             }
-            Log.d(TAG, "Recursively deleted: " + toDelete);
+            Cat.d(TAG, "Recursively deleted: " + toDelete);
             return success && FileUtil.deleteFile(toDelete, App.getAppContext());
         } else {
-            Log.d(TAG, "RMD deleting file: " + toDelete);
+            Cat.d(TAG, "RMD deleting file: " + toDelete);
             boolean success = FileUtil.deleteFile(toDelete, App.getAppContext());
             MediaUpdater.notifyFileDeleted(toDelete.getPath());
             return success;

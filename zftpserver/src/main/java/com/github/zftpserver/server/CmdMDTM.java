@@ -19,10 +19,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
-
 import com.github.zftpserver.Util;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 
@@ -41,7 +39,7 @@ public class CmdMDTM extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "run: MDTM executing, input: " + mInput);
+        Cat.d(TAG, "run: MDTM executing, input: " + mInput);
         String param = getParameter(mInput);
         File file = inputPathToChrootedFile(sessionThread.getChrootDir(), sessionThread.getWorkingDir(), param);
 
@@ -50,11 +48,11 @@ public class CmdMDTM extends FtpCmd implements Runnable {
             String response = "213 " + Util.getFtpDate(lastModified) + "\r\n";
             sessionThread.writeString(response);
         } else {
-            Log.w(TAG, "run: file does not exist");
+            Cat.w(TAG, "run: file does not exist");
             sessionThread.writeString("550 file does not exist\r\n");
         }
 
-        Log.d(TAG, "run: MDTM completed");
+        Cat.d(TAG, "run: MDTM completed");
     }
 
 }

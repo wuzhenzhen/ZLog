@@ -7,7 +7,8 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Environment;
-import android.util.Log;
+
+import com.github.zftpserver.utils.Cat;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,19 +29,22 @@ public enum MediaUpdater {
             MediaScannerConnection.OnScanCompletedListener {
         @Override
         public void onScanCompleted(String path, Uri uri) {
-            Log.i(TAG, "Scan completed: " + path + " : " + uri);
+            Cat.i(TAG, "Scan completed: " + path + " : " + uri);
         }
     }
 
     public static void notifyFileCreated(String path) {
-        Log.d(TAG, "Notifying others about new file: " + path);
+        Cat.d(TAG, "Notifying others about new file: " + path);
         Context context = App.getAppContext();
         MediaScannerConnection.scanFile(context, new String[] { path }, null,
                 new ScanCompletedListener());
+        if(FsService.mFtpListener != null){
+            FsService.mFtpListener.addFile(path);
+        }
     }
 
     public static void notifyFileDeleted(String path) {
-        Log.d(TAG, "Notifying others about deleted file: " + path);
+        Cat.d(TAG, "Notifying others about deleted file: " + path);
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) {
             // on older devices, fake a remount of the media
             // The media mounted broadcast is very taxing on the system, so
@@ -55,7 +59,7 @@ public enum MediaUpdater {
             sTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "Sending ACTION_MEDIA_MOUNTED broadcast");
+                    Cat.d(TAG, "Sending ACTION_MEDIA_MOUNTED broadcast");
                     final Context context = App.getAppContext();
                     Uri uri = Uri.parse("file://" + Environment.getExternalStorageDirectory());
                     Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED, uri);
@@ -67,6 +71,10 @@ public enum MediaUpdater {
             Context context = App.getAppContext();
             MediaScannerConnection.scanFile(context, new String[] { path }, null,
                     new ScanCompletedListener());
+        }
+
+        if(FsService.mFtpListener != null){
+            FsService.mFtpListener.delFile(path);
         }
     }
 }

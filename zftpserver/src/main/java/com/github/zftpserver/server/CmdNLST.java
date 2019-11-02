@@ -26,7 +26,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 
@@ -95,9 +95,9 @@ public class CmdNLST extends CmdAbstractListing implements Runnable {
 
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.d(TAG, "NLST failed with: " + errString);
+            Cat.d(TAG, "NLST failed with: " + errString);
         } else {
-            Log.d(TAG, "NLST completed OK");
+            Cat.d(TAG, "NLST completed OK");
         }
         // The success or error response over the control connection will
         // have already been handled by sendListing, so we can just quit now.
@@ -106,7 +106,7 @@ public class CmdNLST extends CmdAbstractListing implements Runnable {
     @Override
     protected String makeLsString(File file) {
         if (!file.exists()) {
-            Log.i(TAG, "makeLsString had nonexistent file");
+            Cat.i(TAG, "makeLsString had nonexistent file");
             return null;
         }
 
@@ -117,10 +117,10 @@ public class CmdNLST extends CmdAbstractListing implements Runnable {
         String lastNamePart = file.getName();
         // Many clients can't handle files containing these symbols
         if (lastNamePart.contains("*") || lastNamePart.contains("/")) {
-            Log.i(TAG, "Filename omitted due to disallowed character");
+            Cat.i(TAG, "Filename omitted due to disallowed character");
             return null;
         } else {
-            Log.d(TAG, "Filename: " + lastNamePart);
+            Cat.d(TAG, "Filename: " + lastNamePart);
             return lastNamePart + "\r\n";
         }
     }

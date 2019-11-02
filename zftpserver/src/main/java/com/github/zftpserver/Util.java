@@ -20,7 +20,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -44,7 +44,7 @@ abstract public class Util {
             buf.append(byteOfInt(address, 0)).append(sep).append(byteOfInt(address, 1))
                     .append(sep).append(byteOfInt(address, 2)).append(sep)
                     .append(byteOfInt(address, 3));
-            Log.d(TAG, "ipToString returning: " + buf.toString());
+            Cat.d(TAG, "ipToString returning: " + buf.toString());
             return buf.toString();
         } else {
             return null;
@@ -68,7 +68,7 @@ abstract public class Util {
         if (address == 0) {
             // This can only occur due to an error, we shouldn't blindly
             // convert 0 to string.
-            Log.e(TAG, "ipToString won't convert value 0");
+            Cat.e(TAG, "ipToString won't convert value 0");
             return null;
         }
         return ipToString(address, ".");

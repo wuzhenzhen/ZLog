@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 public class CmdQUIT extends FtpCmd implements Runnable {
     private static final String TAG = CmdQUIT.class.getSimpleName();
@@ -30,7 +30,7 @@ public class CmdQUIT extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "QUIT executing");
+        Cat.d(TAG, "QUIT executing");
         sessionThread.writeString("221 Goodbye\r\n");
         sessionThread.closeSocket();
     }

@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class CmdCDUP extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "CDUP executing");
+        Cat.d(TAG, "CDUP executing");
         File newDir;
         String errString = null;
         mainBlock: {
@@ -68,10 +68,10 @@ public class CmdCDUP extends FtpCmd implements Runnable {
         }
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.i(TAG, "CDUP error: " + errString);
+            Cat.i(TAG, "CDUP error: " + errString);
         } else {
             sessionThread.writeString("200 CDUP successful\r\n");
-            Log.d(TAG, "CDUP success");
+            Cat.d(TAG, "CDUP success");
         }
     }
 }

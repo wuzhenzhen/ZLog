@@ -25,10 +25,9 @@ package com.github.zftpserver.server;
  */
 
 
-import android.util.Log;
-
 import com.github.zftpserver.App;
 import com.github.zftpserver.MediaUpdater;
+import com.github.zftpserver.utils.Cat;
 import com.github.zftpserver.utils.FileUtil;
 
 import java.io.File;
@@ -44,7 +43,7 @@ abstract public class CmdAbstractStore extends FtpCmd {
     }
 
     public void doStorOrAppe(String param, boolean append) {
-        Log.d(TAG,"STOR/APPE executing with append = " + append);
+        Cat.d(TAG,"STOR/APPE executing with append = " + append);
 
         File storeFile = inputPathToChrootedFile(sessionThread.getChrootDir(), sessionThread.getWorkingDir(), param);
 
@@ -92,7 +91,7 @@ abstract public class CmdAbstractStore extends FtpCmd {
                 }
 
             } catch (FileNotFoundException e) {
-                Log.e(TAG,"error : ", e);
+                Cat.e(TAG,"error : "+ e);
                 try {
                     errString = "451 Couldn't open file \"" + param + "\" aka \""
                             + storeFile.getCanonicalPath() + "\" for writing\r\n";
@@ -108,18 +107,18 @@ abstract public class CmdAbstractStore extends FtpCmd {
                 errString = "425 Couldn't open data socket\r\n";
                 break storing;
             }
-            Log.d(TAG,"Data socket ready");
+            Cat.d(TAG,"Data socket ready");
             sessionThread.writeString("150 Data socket ready\r\n");
             byte[] buffer = new byte[SessionThread.DATA_CHUNK_SIZE];
 
             int numRead;
 
-            Log.d(TAG,"Mode is " + (sessionThread.isBinaryMode() ? "binary" : "ascii"));
+            Cat.d(TAG,"Mode is " + (sessionThread.isBinaryMode() ? "binary" : "ascii"));
 
             while (true) {
                 switch (numRead = sessionThread.receiveFromDataSocket(buffer)) {
                     case -1:
-                        Log.d(TAG,"Returned from final read");
+                        Cat.d(TAG,"Returned from final read");
                         // We're finished reading
                         break storing;
                     case 0:
@@ -150,7 +149,7 @@ abstract public class CmdAbstractStore extends FtpCmd {
                             }
                         } catch (IOException e) {
                             errString = "451 File IO problem. Device might be full.\r\n";
-                            Log.d(TAG,"Exception while storing: " + e);
+                            Cat.d(TAG,"Exception while storing: " + e);
                             break storing;
                         }
                         break;
@@ -165,7 +164,7 @@ abstract public class CmdAbstractStore extends FtpCmd {
         }
 
         if (errString != null) {
-            Log.i(TAG,"STOR error: " + errString.trim());
+            Cat.i(TAG,"STOR error: " + errString.trim());
             sessionThread.writeString(errString);
         } else {
             sessionThread.writeString("226 Transmission complete\r\n");
@@ -174,6 +173,6 @@ abstract public class CmdAbstractStore extends FtpCmd {
             MediaUpdater.notifyFileCreated(storeFile.getPath());
         }
         sessionThread.closeDataSocket();
-        Log.d(TAG,"STOR finished");
+        Cat.d(TAG,"STOR finished");
     }
 }

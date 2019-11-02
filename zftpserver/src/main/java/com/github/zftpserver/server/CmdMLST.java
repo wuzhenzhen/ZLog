@@ -19,9 +19,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
 import com.github.zftpserver.Util;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 
@@ -41,7 +40,7 @@ public class CmdMLST extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "run: LIST executing, input: " + mInput);
+        Cat.d(TAG, "run: LIST executing, input: " + mInput);
         String param = getParameter(mInput);
         
         File fileToFormat = null;
@@ -57,11 +56,11 @@ public class CmdMLST extends FtpCmd implements Runnable {
             sessionThread.writeString(makeString(fileToFormat) + "\r\n");
             sessionThread.writeString("250 End\r\n");
         } else {
-            Log.w(TAG, "run: file does not exist");
+            Cat.w(TAG, "run: file does not exist");
             sessionThread.writeString("550 file does not exist\r\n");
         }
 
-        Log.d(TAG, "run: LIST completed");
+        Cat.d(TAG, "run: LIST completed");
     }
 
     public String makeString(File file){

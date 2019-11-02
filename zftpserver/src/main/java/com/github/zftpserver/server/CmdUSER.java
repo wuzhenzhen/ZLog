@@ -19,7 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+import com.github.zftpserver.utils.Cat;
 
 public class CmdUSER extends FtpCmd implements Runnable {
     private static final String TAG = CmdUSER.class.getSimpleName();
@@ -34,7 +34,7 @@ public class CmdUSER extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "USER executing");
+        Cat.d(TAG, "USER executing");
         String userName = FtpCmd.getParameter(input);
         if (!userName.matches("[A-Za-z0-9]+")) {
             sessionThread.writeString("530 Invalid username\r\n");

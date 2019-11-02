@@ -33,7 +33,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -68,6 +67,7 @@ public class FsService extends Service implements Runnable {
     static public final String ACTION_STOPPED = "be.ppareit.swiftp.FTPSERVER_STOPPED";
     static public final String ACTION_FAILEDTOSTART = "be.ppareit.swiftp.FTPSERVER_FAILEDTOSTART";
 
+    public static FtpListener mFtpListener;
     protected static Thread serverThread = null;
     protected boolean shouldExit = false;
 
@@ -93,13 +93,13 @@ public class FsService extends Service implements Runnable {
     public static boolean isRunning() {
         // return true if and only if a server Thread is running
         if (serverThread == null) {
-            Log.d(TAG, "Server is not running (null serverThread)");
+            Cat.d(TAG, "Server is not running (null serverThread)");
             return false;
         }
         if (!serverThread.isAlive()) {
-            Log.d(TAG, "serverThread non-null but !isAlive()");
+            Cat.d(TAG, "serverThread non-null but !isAlive()");
         } else {
-            Log.d(TAG, "Server is alive");
+            Cat.d(TAG, "Server is alive");
         }
         return true;
     }
@@ -116,12 +116,27 @@ public class FsService extends Service implements Runnable {
     }
 
     /**
+     * Start this service, which will start the FTP Server
+     */
+    public static void start(Context context,FtpListener listener) {
+        App.initContext(context);
+        mFtpListener = listener;
+        Intent serviceIntent = new Intent(context, FsService.class);
+        if (!FsService.isRunning()) {
+            ContextCompat.startForegroundService(context, serviceIntent);
+        }
+    }
+
+
+    /**
      * Stop the service and thus stop the FTP Server
      */
     public static void stop() {
         Context context = App.getAppContext();
-        Intent serverService = new Intent(context, FsService.class);
-        context.stopService(serverService);
+        if(context != null){
+            Intent serverService = new Intent(context, FsService.class);
+            context.stopService(serverService);
+        }
     }
 
     /**
@@ -131,7 +146,7 @@ public class FsService extends Service implements Runnable {
     private static void warnIfNoExternalStorage() {
         String storageState = Environment.getExternalStorageState();
         if (!storageState.equals(Environment.MEDIA_MOUNTED)) {
-            Log.v(TAG, "Warning due to storage state " + storageState);
+            Cat.v(TAG, "Warning due to storage state " + storageState);
             Toast toast = Toast.makeText(App.getAppContext(),
                     "Warning: storage is not available. You may want to unmount it.", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
@@ -146,7 +161,7 @@ public class FsService extends Service implements Runnable {
         //https://developer.android.com/reference/android/app/Service.html
         //if there are not any pending start commands to be delivered to the service, it will be called with a null intent object,
         if (intent != null && intent.getAction() != null) {
-            Log.d(TAG,"onStartCommand called with action: " + intent.getAction());
+            Cat.d(TAG,"onStartCommand called with action: " + intent.getAction());
 
             switch (intent.getAction()) {
                 case ACTION_REQUEST_START:
@@ -166,16 +181,16 @@ public class FsService extends Service implements Runnable {
         int attempts = 10;
         // The previous server thread may still be cleaning up, wait for it to finish.
         while (serverThread != null) {
-            Log.w(TAG, "Won't start, server thread exists");
+            Cat.w(TAG, "Won't start, server thread exists");
             if (attempts > 0) {
                 attempts--;
                 Util.sleepIgnoreInterrupt(1000);
             } else {
-                Log.w(TAG, "Server thread already exists");
+                Cat.w(TAG, "Server thread already exists");
                 return START_STICKY;
             }
         }
-        Log.d(TAG, "Creating server thread");
+        Cat.d(TAG, "Creating server thread");
         serverThread = new Thread(this);
         serverThread.start();
         return START_STICKY;
@@ -183,10 +198,10 @@ public class FsService extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "onDestroy() Stopping server");
+        Cat.i(TAG, "onDestroy() Stopping server");
         shouldExit = true;
         if (serverThread == null) {
-            Log.w(TAG, "Stopping with null serverThread");
+            Cat.w(TAG, "Stopping with null serverThread");
             return;
         }
         serverThread.interrupt();
@@ -195,48 +210,55 @@ public class FsService extends Service implements Runnable {
         } catch (InterruptedException ignored) {
         }
         if (serverThread.isAlive()) {
-            Log.w(TAG, "Server thread failed to exit");
+            Cat.w(TAG, "Server thread failed to exit");
             // it may still exit eventually if we just leave the shouldExit flag set
         } else {
-            Log.d(TAG, "serverThread join()ed ok");
+            Cat.d(TAG, "serverThread join()ed ok");
             serverThread = null;
         }
         try {
             if (listenSocket != null) {
-                Log.i(TAG, "Closing listenSocket");
+                Cat.i(TAG, "Closing listenSocket");
                 listenSocket.close();
             }
         } catch (IOException ignored) {
         }
 
         if (wifiLock != null) {
-            Log.d(TAG, "onDestroy: Releasing wifi lock");
+            Cat.d(TAG, "onDestroy: Releasing wifi lock");
             wifiLock.release();
             wifiLock = null;
         }
         if (wakeLock != null) {
-            Log.d(TAG, "onDestroy: Releasing wake lock");
+            Cat.d(TAG, "onDestroy: Releasing wake lock");
             wakeLock.release();
             wakeLock = null;
         }
-        Log.d(TAG, "FTPServerService.onDestroy() finished");
+        Cat.d(TAG, "FTPServerService.onDestroy() finished");
+        if(mFtpListener != null){
+            mFtpListener.closeFtp();
+        }
     }
 
     // This opens a listening socket on all interfaces.
     void setupListener() throws IOException {
         listenSocket = new ServerSocket();
         listenSocket.setReuseAddress(true);
+//        listenSocket.bind(new InetSocketAddress("192.168.43.1",2121));
         listenSocket.bind(new InetSocketAddress(FsSettings.getPortNumber()));
     }
 
     @Override
     public void run() {
-        Log.d(TAG, "Server thread running");
+        Cat.d(TAG, "Server thread running");
 
         if (!isConnectedToLocalNetwork()) {
-            Log.e(TAG, "run: There is no local network, bailing out");
+            Cat.e(TAG, "run: There is no local network, bailing out");
             stopSelf();
             sendBroadcast(new Intent(ACTION_FAILEDTOSTART));
+            if(mFtpListener != null){
+                mFtpListener.openFtp(1,"There is no local network, bailing out");
+            }
             return;
         }
 
@@ -244,7 +266,10 @@ public class FsService extends Service implements Runnable {
         try {
             setupListener();
         } catch (IOException e) {
-            Log.w(TAG, "run: Unable to open port, bailing out.");
+            Cat.w(TAG, "run: Unable to open port, bailing out.");
+            if(mFtpListener != null){
+                mFtpListener.openFtp(1,"Unable to open port, bailing out.");
+            }
             stopSelf();
             sendBroadcast(new Intent(ACTION_FAILEDTOSTART));
             return;
@@ -255,13 +280,16 @@ public class FsService extends Service implements Runnable {
         takeWakeLock();
 
         // A socket is open now, so the FTP server is started, notify rest of world
-        Log.i(TAG, "Ftp Server up and running, broadcasting ACTION_STARTED");
+        Cat.i(TAG, "Ftp Server up and running, broadcasting ACTION_STARTED");
         sendBroadcast(new Intent(ACTION_STARTED));
+        if(mFtpListener != null){
+            mFtpListener.openFtp(1,"success");
+        }
 
         while (!shouldExit) {
             if (wifiListener != null) {
                 if (!wifiListener.isAlive()) {
-                    Log.d(TAG, "Joining crashed wifiListener thread");
+                    Cat.d(TAG, "Joining crashed wifiListener thread");
                     try {
                         wifiListener.join();
                     } catch (InterruptedException ignored) {
@@ -280,7 +308,7 @@ public class FsService extends Service implements Runnable {
                 // the main socket to send an exit signal
                 Thread.sleep(WAKE_INTERVAL_MS);
             } catch (InterruptedException e) {
-                Log.d(TAG, "Thread interrupted");
+                Cat.d(TAG, "Thread interrupted");
             }
         }
 
@@ -291,14 +319,14 @@ public class FsService extends Service implements Runnable {
             wifiListener = null;
         }
         shouldExit = false; // we handled the exit flag, so reset it to acknowledge
-        Log.d(TAG, "Exiting cleanly, returning from run()");
+        Cat.d(TAG, "Exiting cleanly, returning from run()");
 
         stopSelf();
         sendBroadcast(new Intent(ACTION_STOPPED));
     }
 
     private void terminateAllSessions() {
-        Log.i(TAG, "Terminating " + sessionThreads.size() + " session thread(s)");
+        Cat.i(TAG, "Terminating " + sessionThreads.size() + " session thread(s)");
         synchronized (this) {
             for (SessionThread sessionThread : sessionThreads) {
                 if (sessionThread != null) {
@@ -320,10 +348,10 @@ public class FsService extends Service implements Runnable {
         if (wakeLock == null) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             if (FsSettings.shouldTakeFullWakeLock()) {
-                Log.d(TAG, "takeWakeLock: Taking full wake lock");
+                Cat.d(TAG, "takeWakeLock: Taking full wake lock");
                 wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
             } else {
-                Log.d(TAG, "maybeTakeWakeLock: Taking partial wake lock");
+                Cat.d(TAG, "maybeTakeWakeLock: Taking partial wake lock");
                 wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             }
             wakeLock.setReferenceCounted(false);
@@ -332,7 +360,7 @@ public class FsService extends Service implements Runnable {
     }
 
     private void takeWifiLock() {
-        Log.d(TAG, "takeWifiLock: Taking wifi lock");
+        Cat.d(TAG, "takeWifiLock: Taking wifi lock");
         if (wifiLock == null) {
             WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             wifiLock = manager.createWifiLock(TAG);
@@ -349,7 +377,7 @@ public class FsService extends Service implements Runnable {
     public static InetAddress getLocalInetAddress() {
         InetAddress returnAddress = null;
         if (!isConnectedToLocalNetwork()) {
-            Log.e(TAG, "getLocalInetAddress called and no connection");
+            Cat.e(TAG, "getLocalInetAddress called and no connection");
             return null;
         }
         try {
@@ -363,7 +391,7 @@ public class FsService extends Service implements Runnable {
                             && !address.isLinkLocalAddress()
                             && address instanceof Inet4Address) {
                         if (returnAddress != null) {
-                            Log.w(TAG,"Found more than one valid address local inet address, why???");
+                            Cat.w(TAG,"Found more than one valid address local inet address, why???");
                         }
                         returnAddress = address;
                     }
@@ -390,7 +418,7 @@ public class FsService extends Service implements Runnable {
                 && ni.isConnected()
                 && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
+            Cat.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
             WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             try {
                 Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
@@ -400,7 +428,7 @@ public class FsService extends Service implements Runnable {
             }
         }
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
+            Cat.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
             try {
                 List<NetworkInterface> networkInterfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
                 for (NetworkInterface netInterface : networkInterfaces) {
@@ -430,14 +458,14 @@ public class FsService extends Service implements Runnable {
             List<SessionThread> toBeRemoved = new ArrayList<SessionThread>();
             for (SessionThread sessionThread : sessionThreads) {
                 if (!sessionThread.isAlive()) {
-                    Log.d(TAG, "Cleaning up finished session...");
+                    Cat.d(TAG, "Cleaning up finished session...");
                     try {
                         sessionThread.join();
-                        Log.d(TAG, "Thread joined");
+                        Cat.d(TAG, "Thread joined");
                         toBeRemoved.add(sessionThread);
                         sessionThread.closeSocket(); // make sure socket closed
                     } catch (InterruptedException e) {
-                        Log.d(TAG, "Interrupted while joining");
+                        Cat.d(TAG, "Interrupted while joining");
                         // We will try again in the next loop iteration
                     }
                 }
@@ -449,7 +477,7 @@ public class FsService extends Service implements Runnable {
             // Cleanup is complete. Now actually add the new thread to the list.
             sessionThreads.add(newSession);
         }
-        Log.d(TAG, "Registered session thread");
+        Cat.d(TAG, "Registered session thread");
     }
 
     @Override
@@ -460,7 +488,7 @@ public class FsService extends Service implements Runnable {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.d(TAG, "user has removed my activity, we got killed! restarting...");
+        Cat.d(TAG, "user has removed my activity, we got killed! restarting...");
         Intent restartService = new Intent(getApplicationContext(), this.getClass());
         restartService.setPackage(getPackageName());
         PendingIntent restartServicePI = PendingIntent.getService(

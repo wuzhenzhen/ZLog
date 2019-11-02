@@ -19,7 +19,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
+
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class CmdCWD extends FtpCmd implements Runnable {
 
     @Override
     public void run() {
-        Log.d(TAG, "CWD executing");
+        Cat.d(TAG, "CWD executing");
         String param = getParameter(input);
         File newDir;
         String errString = null;
@@ -47,13 +48,13 @@ public class CmdCWD extends FtpCmd implements Runnable {
             if (violatesChroot(newDir)) {
                 errString = "550 Invalid name or chroot violation\r\n";
                 sessionThread.writeString(errString);
-                Log.i(TAG, errString);
+                Cat.i(TAG, errString);
                 break mainblock;
             }
 
             try {
                 newDir = newDir.getCanonicalFile();
-                Log.i(TAG, "New directory: " + newDir);
+                Cat.i(TAG, "New directory: " + newDir);
                 if (!newDir.isDirectory()) {
                     sessionThread.writeString("550 Can't CWD to invalid directory\r\n");
                 } else if (newDir.canRead()) {
@@ -67,6 +68,6 @@ public class CmdCWD extends FtpCmd implements Runnable {
                 break mainblock;
             }
         }
-        Log.d(TAG, "CWD complete");
+        Cat.d(TAG, "CWD complete");
     }
 }

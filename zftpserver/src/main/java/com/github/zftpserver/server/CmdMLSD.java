@@ -26,10 +26,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
-
 import com.github.zftpserver.Util;
+import com.github.zftpserver.utils.Cat;
 
 import java.io.File;
 
@@ -50,7 +48,7 @@ public class CmdMLSD extends CmdAbstractListing implements Runnable {
 
         mainblock: {
             String param = getParameter(input);
-            Log.d(TAG, "MLSD parameter: " + param);
+            Cat.d(TAG, "MLSD parameter: " + param);
             File fileToList = null;
             if (param.equals("")) {
                 fileToList = sessionThread.getWorkingDir();
@@ -89,9 +87,9 @@ public class CmdMLSD extends CmdAbstractListing implements Runnable {
 
         if (errString != null) {
             sessionThread.writeString(errString);
-            Log.d(TAG, "MLSD failed with: " + errString);
+            Cat.d(TAG, "MLSD failed with: " + errString);
         } else {
-            Log.d(TAG, "MLSD completed OK");
+            Cat.d(TAG, "MLSD completed OK");
         }
         // The success or error response over the control connection will
         // have already been handled by sendListing, so we can just quit now.
@@ -103,7 +101,7 @@ public class CmdMLSD extends CmdAbstractListing implements Runnable {
         StringBuilder response = new StringBuilder();
 
         if (!file.exists()) {
-            Log.i(TAG, "makeLsString had nonexistent file");
+            Cat.i(TAG, "makeLsString had nonexistent file");
             return null;
         }
 
@@ -114,7 +112,7 @@ public class CmdMLSD extends CmdAbstractListing implements Runnable {
         String lastNamePart = file.getName();
         // Many clients can't handle files containing these symbols
         if (lastNamePart.contains("*") || lastNamePart.contains("/")) {
-            Log.i(TAG, "Filename omitted due to disallowed character");
+            Cat.i(TAG, "Filename omitted due to disallowed character");
             return null;
         } else {
             // The following line generates many calls in large directories

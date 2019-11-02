@@ -19,9 +19,8 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
-import android.util.Log;
-
 import com.github.zftpserver.FsService;
+import com.github.zftpserver.utils.Cat;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,7 +42,7 @@ public class TcpListener extends Thread {
             listenSocket.close(); // if the TcpListener thread is blocked on accept,
                                   // closing the socket will raise an exception
         } catch (Exception e) {
-            Log.d(TAG, "Exception closing TcpListener listenSocket");
+            Cat.d(TAG, "Exception closing TcpListener listenSocket");
         }
     }
 
@@ -52,13 +51,13 @@ public class TcpListener extends Thread {
         try {
             while (true) {
                 Socket clientSocket = listenSocket.accept();
-                Log.i(TAG, "New connection, spawned thread");
+                Cat.i(TAG, "New connection, spawned thread");
                 SessionThread newSession = new SessionThread(clientSocket, new LocalDataSocket());
                 newSession.start();
                 ftpServerService.registerSessionThread(newSession);
             }
         } catch (Exception e) {
-            Log.d(TAG, "Exception in TcpListener");
+            Cat.d(TAG, "Exception in TcpListener");
         }
     }
 }
