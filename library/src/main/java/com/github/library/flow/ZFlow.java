@@ -36,7 +36,7 @@ public class ZFlow {
             public void run() {
                 while (true){
                     try {
-                        Thread.sleep(30*1000L);
+                        Thread.sleep(60*1000L);
                         // 获取到配置权限信息的应用程序
                         PackageManager pms = context.getPackageManager();
                         List<PackageInfo> packinfos = pms
@@ -56,8 +56,8 @@ public class ZFlow {
                                         long uidTX = TrafficStats.getUidTxBytes(packinfo.applicationInfo.uid);
                                         long mobileRX = TrafficStats.getMobileRxBytes();
                                         long mobileTX = TrafficStats.getMobileTxBytes();
-                                        long totalRX = TrafficStats.getTotalRxBytes();
-                                        long totalTX = TrafficStats.getTotalTxBytes();
+                                        long totalRX = TrafficStats.getTotalRxBytes();  // 获取总的接受字节数，包含Mobile和WiFi等
+                                        long totalTX = TrafficStats.getTotalTxBytes();   //总的发送字节数，包含Mobile和WiFi等
 
                                         long total = totalRX + totalTX;
                                         if (uidRX > 0 || uidTX > 0) {
@@ -77,14 +77,18 @@ public class ZFlow {
 //                                            ZLog.ddd("--traffic--"+td.toString());
                                             // 保存详细流量数据
                                             DaoUtils.INSTANCE.getTrafficDetailOperator().insertObject(td);
-
-                                            // 更新 trafficDayDetail
-                                            updateTrafficDyaDetail(totalRX, totalTX, total);
                                         }
+                                        break;
                                     }
                                 }
                             }
                         }
+
+                        long totalRX = TrafficStats.getTotalRxBytes();  // 获取总的接受字节数，包含Mobile和WiFi等
+                        long totalTX = TrafficStats.getTotalTxBytes();   //总的发送字节数，包含Mobile和WiFi等
+                        long total = totalRX + totalTX;
+                        // 更新 trafficDayDetail
+                        updateTrafficDyaDetail(totalRX, totalTX, total);
                     } catch (InterruptedException e) {
                         ZLog.eee("--ZFlow--InterruptedException--"+e.getLocalizedMessage());
                         e.printStackTrace();
@@ -100,13 +104,21 @@ public class ZFlow {
     //数据库缓存清理
     private static void clearCache(){
         DaoUtils.INSTANCE.getTrafficDetailOperator().delBeforeTime(10); //清除 10天之前的 流量明细数据
-        DaoUtils.INSTANCE.getTrafficDayDetailOperator().delBeforeTime(100); //清除100天之前的流量统计数据
+        DaoUtils.INSTANCE.getTrafficDayDetailOperator().delBeforeTime(365); //清除365天之前的流量统计数据
     }
 
-    // 更新 trafficDayDetail
+    /**
+     *   更新 trafficDayDetail
+     * @param totalRX
+     * @param totalTX
+     * @param total
+     *   1. 要考虑跨天情况
+     *   2. 要考虑时间错误到时间正确的情况（钮扣电池无电）
+     *   3. 要考虑程序或系统 重启的情况
+     */
     public static void updateTrafficDyaDetail(long totalRX, long totalTX, long total){
         //更新 startTime(开机时间)  到现在的流量
-        TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime();
+        TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime(System.currentTimeMillis());  //FIXME 查询 currentTime 内的最后一次更新记录
         if(tdd == null){  //初次运行，一条数据也没有
             tdd = new TrafficDayDetail();
             tdd.setStartTime(startTime);
@@ -175,7 +187,7 @@ public class ZFlow {
                     }
                 }else{  //昨天开机一直运行到今天
                     //考虑每次入库时要减去 前一次的数据
-                    TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday();
+                    TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday(); //查询昨天最后一天记录
                     if(tddYes != null && total > tddYes.getTotal()){
                         tdd = new TrafficDayDetail();
                         isRunMoreDay = true;
@@ -188,7 +200,17 @@ public class ZFlow {
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
                         ZLog.iii("--program run more day--tddYes="+tddYes.toString()+"--"+tdd.toString());
                     }else{
-                        ZLog.eee("--impossibility error--");
+                        ZLog.eee("--impossibility error--");  //FIXME 钮扣电池无电 从平台重新获取了时间
+
+                        startTime = System.currentTimeMillis();
+                        tdd = new TrafficDayDetail();
+                        tdd.setStartTime(startTime);
+                        tdd.setRx(totalRX);
+                        tdd.setTx(totalTX);
+                        tdd.setTotal(total);
+                        tdd.setLastTime(System.currentTimeMillis());
+                        DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
+                        ZLog.eee("--startTime--reValue--");
                     }
                 }
             }else {
@@ -211,6 +233,7 @@ public class ZFlow {
             }
         }
     }
+
 
     // Long时间格式化
     public static String getYMDHMSFromLong(Long date) {

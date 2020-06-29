@@ -17,7 +17,7 @@ public class TrafficDayDetail {
     @Unique
     private Long id;
 
-    private long startTime;
+    private long startTime;     //开机时间     一天内可能开机N次
     private String packageName;
     private long rx;
     private long tx;

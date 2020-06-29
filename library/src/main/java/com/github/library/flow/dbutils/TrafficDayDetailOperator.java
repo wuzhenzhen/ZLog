@@ -52,6 +52,21 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         return null;
     }
 
+    //获取 某天 最后插入的一条数据
+    public TrafficDayDetail queryByLastTime(long time) {
+        long endTime = getDayEndTime(time,0);
+        QueryBuilder<TrafficDayDetail> queryBuilder =
+                getDaoSession().getTrafficDayDetailDao().queryBuilder();
+        List<TrafficDayDetail> entityAngleRaws = queryBuilder
+                .where(TrafficDayDetailDao.Properties.LastTime .le(endTime))
+                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
+                .list();
+        if (entityAngleRaws != null && entityAngleRaws.size() > 0){
+            return  entityAngleRaws.get(0);
+        }
+        return null;
+    }
+
     //获取当天最后插入的一条数据
     public TrafficDayDetail queryByCurrentDay(){
         long currentTime = System.currentTimeMillis();
