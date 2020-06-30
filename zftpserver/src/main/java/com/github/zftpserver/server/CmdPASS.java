@@ -19,6 +19,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.github.zftpserver.server;
 
+import com.github.zftpserver.FsService;
 import com.github.zftpserver.FsSettings;
 import com.github.zftpserver.Util;
 import com.github.zftpserver.utils.Cat;
@@ -54,16 +55,25 @@ public class CmdPASS extends FtpCmd implements Runnable {
             Util.sleepIgnoreInterrupt(1000); // sleep to foil brute force attack
             sessionThread.writeString("500 Login incorrect.\r\n");
             sessionThread.authAttempt( false);
+            if(FsService.mFtpListener != null){
+                FsService.mFtpListener.login(1,"500 Login incorrect.");
+            }
         } else if (user.getPassword().equals(attemptPassword)) {
             Cat.i(TAG, "User " + user.getUsername() + " password verified, Chroot "+user.getChroot());
             sessionThread.writeString("230 Access granted\r\n");
             sessionThread.authAttempt(true);
             sessionThread.setChrootDir(user.getChroot());
+            if(FsService.mFtpListener != null){
+                FsService.mFtpListener.login(0,user.getUsername()+"#"+user.getChroot());
+            }
         } else {
             Cat.i(TAG, "Failed authentication, incorrect password");
             Util.sleepIgnoreInterrupt(1000); // sleep to foil brute force attack
             sessionThread.writeString("530 Login incorrect.\r\n");
             sessionThread.authAttempt(false);
+            if(FsService.mFtpListener != null){
+                FsService.mFtpListener.login(1,"530 Login incorrect.");
+            }
         }
     }
 }

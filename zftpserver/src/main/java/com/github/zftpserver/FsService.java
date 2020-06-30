@@ -412,6 +412,9 @@ public class FsService extends Service implements Runnable {
     public static boolean isConnectedToLocalNetwork() {
         boolean connected = false;
         Context context = App.getAppContext();
+        if(context == null){
+            return connected;
+        }
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         connected = ni != null

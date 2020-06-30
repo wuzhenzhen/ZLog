@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.novoda.bintray-release'//添加
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -60,3 +60,13 @@ task makeJar(type:Jar){
 }
 
 makeJar.dependsOn(deleteBuild, build)
+
+//添加
+publish {
+    userOrg = 'shed'
+    groupId = 'com.kgd.tools'
+    artifactId = 'ZFtpServer'
+    publishVersion = '1.0.0'
+    desc = 'this is a android ftp server'
+    website = 'https://github.com/wuzhenzhen/ZLog'
+}

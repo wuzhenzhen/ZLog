@@ -42,13 +42,8 @@ public class FsSettings {
     private static String externalStorageUri;   //外部存储地址
 
     private static void initFtpUser(){
-        final Context context = App.getAppContext();
-        FtpUser ftpUser = new FtpUser("ftp","ftp","\\");
-        FtpUser ftpUser2 = new FtpUser("lv","lv","\\");
-        FtpUser ftpUser3 = new FtpUser("wzz","wzz","/sdcard/EBSB_SDCardLog");
+        FtpUser ftpUser = new FtpUser("Tiamaes","Tiamaes","\\");
         ftpUserList.add(ftpUser);
-        ftpUserList.add(ftpUser2);
-        ftpUserList.add(ftpUser3);
     }
 
     public static List<FtpUser> getUsers() {
