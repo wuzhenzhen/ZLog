@@ -103,7 +103,7 @@ public class ZFlow {
 
     //数据库缓存清理
     private static void clearCache(){
-        DaoUtils.INSTANCE.getTrafficDetailOperator().delBeforeTime(10); //清除 10天之前的 流量明细数据
+        DaoUtils.INSTANCE.getTrafficDetailOperator().delBeforeTime(15); //清除 15天之前的 流量明细数据
         DaoUtils.INSTANCE.getTrafficDayDetailOperator().delBeforeTime(365); //清除365天之前的流量统计数据
     }
 
@@ -113,12 +113,13 @@ public class ZFlow {
      * @param totalTX
      * @param total
      *   1. 要考虑跨天情况
-     *   2. 要考虑时间错误到时间正确的情况（钮扣电池无电）
+     *   2. 时间错乱情况（钮扣电池无电, 人为修改时间[暂不处理]）
+     *       既是钮扣电池无电(由开机默认2010到同步到2020年)，但是系统流量统计还是统计的从开机到现在的流量
      *   3. 要考虑程序或系统 重启的情况
      */
     public static void updateTrafficDyaDetail(long totalRX, long totalTX, long total){
         //更新 startTime(开机时间)  到现在的流量
-        TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime(System.currentTimeMillis());  //FIXME 查询 currentTime 内的最后一次更新记录
+        TrafficDayDetail tdd = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByLastTime(System.currentTimeMillis());  // 查询 currentTime 内的最后一次更新记录
         if(tdd == null){  //初次运行，一条数据也没有
             tdd = new TrafficDayDetail();
             tdd.setStartTime(startTime);
@@ -186,6 +187,7 @@ public class ZFlow {
                         }
                     }
                 }else{  //昨天开机一直运行到今天
+                    //FIXME 考虑人为往后修改时间后，不重启程序情况下，又往前修正正确的情况
                     //考虑每次入库时要减去 前一次的数据
                     TrafficDayDetail tddYes = DaoUtils.INSTANCE.getTrafficDayDetailOperator().queryByYesterday(); //查询昨天最后一天记录
                     if(tddYes != null && total > tddYes.getTotal()){
@@ -200,7 +202,7 @@ public class ZFlow {
                         DaoUtils.INSTANCE.getTrafficDayDetailOperator().insertObject(tdd);
                         ZLog.iii("--program run more day--tddYes="+tddYes.toString()+"--"+tdd.toString());
                     }else{
-                        ZLog.eee("--impossibility error--");  //FIXME 钮扣电池无电 从平台重新获取了时间
+                        ZLog.eee("--impossibility error--");  //钮扣电池无电 从平台重新获取了时间
 
                         startTime = System.currentTimeMillis();
                         tdd = new TrafficDayDetail();

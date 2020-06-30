@@ -47,7 +47,7 @@ dependencies {
 }
 
 def _BASENAME = "ZLog";
-def _VERSION = "_V1.0.6";
+def _VERSION = "_V1.0.7";
 def _DestinationPath = "build"; //生成jar包的位置
 def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.jar'); //待打包文件位置
 
@@ -80,7 +80,7 @@ publish {
     userOrg = 'shed'
     groupId = 'com.kgd.tools'
     artifactId = 'ZLog'
-    publishVersion = '1.0.6'
+    publishVersion = '1.0.7'
     desc = 'this is a android log tools'
     website = 'https://github.com/wuzhenzhen/ZLog'
 }
