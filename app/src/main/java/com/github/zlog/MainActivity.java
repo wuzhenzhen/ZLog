@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
 //		ZLog.e("The is error log");
 //		ZLog.json("{\"code\":0,\"message\":\"success\",\"result\":[{\"id\":0,\"img\":\"http://i0.hdslb.com/bfs/bangumi/a4e0f26fdd24887749ee023c3d6d2f31eafde946.jpg\",\"is_ad\":0,\"link\":\"http://bangumi.bilibili.com/anime/3461\",\"simg\":\"http://i0.hdslb.com/bfs/bangumi/3e62691b8d95944a355378bf3fdcd1de34549966.jpg\",\"title\":\"完结撒花！\"},{\"id\":0,\"img\":\"http://i0.hdslb.com/bfs/bangumi/43daa400687be05e8b5f2ac43ee2efc431859260.jpg\",\"is_ad\":0,\"link\":\"http://bangumi.bilibili.com/anime/191\",\"simg\":\"http://i0.hdslb.com/bfs/bangumi/95ad9d56dd263668ee90dbfc38428ad7d64cccf4.jpg\",\"title\":\"请问您今天要来点兔子吗？\"},{\"id\":0,\"img\":\"http://i0.hdslb.com/bfs/bangumi/bec36122392fa877cbd786547bc1460ee03b6611.jpg\",\"is_ad\":0,\"link\":\"http://bangumi.bilibili.com/anime/1183\",\"simg\":\"http://i0.hdslb.com/bfs/bangumi/62645a31323f50805101d3ff913a022d61a1a9ac.jpg\",\"title\":\"CODE GEASS 反叛的鲁路修\"},{\"id\":0,\"img\":\"http://i0.hdslb.com/bfs/bangumi/2768afe6997c9dab6455c7efac85d14c9c1ff5da.jpg\",\"is_ad\":0,\"link\":\"http://bangumi.bilibili.com/anime/2546\",\"simg\":\"http://i0.hdslb.com/bfs/bangumi/88a29d2e30288816059865b7bcb07cc6b589d7f2.jpg\",\"title\":\"言叶之庭\"},{\"id\":0,\"img\":\"http://i0.hdslb.com/bfs/bangumi/4b68111b04e9cbd32e4d29c28bfb2bf8b5df8505.jpg\",\"is_ad\":0,\"link\":\"http://bangumi.bilibili.com/anime/3151\",\"simg\":\"http://i0.hdslb.com/bfs/bangumi/1f42b344f5077799f797fdc14c26ec7ff4d1758d.jpg\",\"title\":\"异邦人：无皇刃谭\"}]}");
 
-//		//只写入Log 文件
-//		ZLog.vv("file: The is verbose log");
+		//只写入Log 文件
+		ZLog.vv("file: The is verbose log");
 //		ZLog.dd("file: The is debug log");
 //		ZLog.ii("file: The is info log");
 //		ZLog.ww("file: The is warn log");
@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         //... Test More
 
         ZLog.eee("=========Flow==========start");
-        ZLog.iii("---flow="+ZFlow.getSumFlowYesterday());
-        ZLog.iii("---flow="+ZFlow.getSumFlow(System.currentTimeMillis()));
+        ZLog.iii("---flow="+ZFlow.getSumFlowYesterday());  //打印昨天的流量数据
+        ZLog.iii("---flow="+ZFlow.getSumFlow(System.currentTimeMillis())); //打印某一天的流量数据
         ZLog.eee("=========Flow==========end");
     }
 

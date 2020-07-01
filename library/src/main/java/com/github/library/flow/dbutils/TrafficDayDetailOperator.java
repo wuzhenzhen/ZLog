@@ -75,7 +75,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
         List<TrafficDayDetail> entityAngleRaws = queryBuilder
                 .where(TrafficDayDetailDao.Properties.StartTime.ge(getDayStartTime(currentTime, 0)),
                         TrafficDayDetailDao.Properties.StartTime.le(getDayEndTime(currentTime,0)))
-                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
+                .orderDesc(TrafficDayDetailDao.Properties.StartTime)
                 .list();
         if (entityAngleRaws != null && entityAngleRaws.size() > 0){
             return  entityAngleRaws.get(0);
@@ -90,7 +90,7 @@ public class TrafficDayDetailOperator extends BaseOperator<TrafficDayDetail>  {
                 getDaoSession().getTrafficDayDetailDao().queryBuilder();
         List<TrafficDayDetail> entityAngleRaws = queryBuilder
                 .where(TrafficDayDetailDao.Properties.StartTime.ge(getDayStartTime(currentTime, -1)),TrafficDayDetailDao.Properties.StartTime.le(getDayEndTime(currentTime,-1)))
-                .orderDesc(TrafficDayDetailDao.Properties.LastTime)
+                .orderDesc(TrafficDayDetailDao.Properties.StartTime)
                 .list();
         if (entityAngleRaws != null && entityAngleRaws.size() > 0){
             return  entityAngleRaws.get(0);

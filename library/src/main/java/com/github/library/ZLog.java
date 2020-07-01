@@ -62,7 +62,7 @@ public class ZLog {
     // 日志输出格式
     public static final char LOG_OUTPUT_FORMAT_1 = 0x01;        //日志保存默认格式
     public static final char LOG_OUTPUT_FORMAT_2 = 0x01 << 1;   //日志保存精简格式
-    public static final char LOG_OUTPUT_FORMAT_3 = 0x01 << 2;
+    public static final char LOG_OUTPUT_FORMAT_3 = 0x01 << 2;   //单行日志打印
     //位运算
     public static final char OPERATION_BIT = 0; //不显示 某级别Log
     public static final char NOT_SHOW_LOG = 0; //不显示 LogTransaction
