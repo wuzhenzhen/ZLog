@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'//添加
+//apply plugin: 'com.novoda.bintray-release'//添加
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -9,7 +9,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -44,29 +44,44 @@ dependencies {
 }
 
 def _BASENAME = "ZFtpServer";
-def _VERSION = "_V1.0.0";
+def _VERSION = "_V1.0.1";
 def _DestinationPath = "build"; //生成jar包的位置
 def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.jar'); //待打包文件位置
 
-task deleteBuild(type:Delete){
-    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
+//task deleteBuild(type:Delete){
+//    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
+//}
+//
+//task makeJar(type:Jar){
+//    from zipTree(zipFile)
+//    from fileTree(dir:'src/main',includes:['assets/**']) //将assets目录打入jar包
+//    baseName = _BASENAME + _VERSION
+//    destinationDir = file(_DestinationPath)
+//}
+//
+//makeJar.dependsOn(deleteBuild, build)
+
+task makeJar(type: Jar) {
+    archiveBaseName = _BASENAME // JAR文件名
+    archiveVersion = _VERSION       // 版本号（可选）
+    // 包含编译后的类文件，排除R和BuildConfig
+    from('build/intermediates/javac/release/classes/') {
+        exclude '**/R.class'
+        exclude '**/R$*.class'
+        exclude '**/BuildConfig.class'
+    }
+    destinationDirectory = file('build/libs/') // 输出目录
 }
 
-task makeJar(type:Jar){
-    from zipTree(zipFile)
-    from fileTree(dir:'src/main',includes:['assets/**']) //将assets目录打入jar包
-    baseName = _BASENAME + _VERSION
-    destinationDir = file(_DestinationPath)
-}
-
-makeJar.dependsOn(deleteBuild, build)
+// 确保任务在编译后执行
+makeJar.dependsOn(build)
 
 //添加
-publish {
-    userOrg = 'shed'
-    groupId = 'com.kgd.tools'
-    artifactId = 'ZFtpServer'
-    publishVersion = '1.0.0'
-    desc = 'this is a android ftp server'
-    website = 'https://github.com/wuzhenzhen/ZLog'
-}
+//publish {
+//    userOrg = 'shed'
+//    groupId = 'com.kgd.tools'
+//    artifactId = 'ZFtpServer'
+//    publishVersion = '1.0.0'
+//    desc = 'this is a android ftp server'
+//    website = 'https://github.com/wuzhenzhen/ZLog'
+//}

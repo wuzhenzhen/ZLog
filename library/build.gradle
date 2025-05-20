@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'//添加
+//apply plugin: 'com.novoda.bintray-release'//添加
 apply plugin: 'org.greenrobot.greendao' // apply plugin
 android {
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 107
-        versionName "1.0.7"
+        versionCode 108
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -30,7 +30,7 @@ android {
         targetGenDir 'src/main/java'
     }
 
-    lintOptions{
+    lintOptions {
         abortOnError false
     }
 }
@@ -43,11 +43,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
     //  https://github.com/greenrobot/greenDAO
-    implementation 'org.greenrobot:greendao:3.2.2' // add library
+    implementation 'org.greenrobot:greendao:3.3.0' // add library
 }
 
 def _BASENAME = "ZLog";
-def _VERSION = "_V1.0.7";
+def _VERSION = "_V1.0.8";
 def _DestinationPath = "build"; //生成jar包的位置
 def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.jar'); //待打包文件位置
 
@@ -62,25 +62,40 @@ def zipFile = file('build/intermediates/full_jar/debug/createFullJarDebug/full.j
 //    failOnError false
 //}
 
-task deleteBuild(type:Delete){
-    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
+//task deleteBuild(type: Delete) {
+//    delete _DestinationPath + _BASENAME + _VERSION + ".jar"
+//}
+
+//task makeJar(type: Jar) {
+//    from zipTree(zipFile)
+//    from fileTree(dir: 'src/main', includes: ['assets/**']) //将assets目录打入jar包
+//    baseName = _BASENAME + _VERSION
+//    destinationDir = file(_DestinationPath)
+//}
+//
+//makeJar.dependsOn(deleteBuild, build)
+
+task makeJar(type: Jar) {
+    archiveBaseName = _BASENAME // JAR文件名
+    archiveVersion = _VERSION       // 版本号（可选）
+    // 包含编译后的类文件，排除R和BuildConfig
+    from('build/intermediates/javac/release/classes/') {
+        exclude '**/R.class'
+        exclude '**/R$*.class'
+        exclude '**/BuildConfig.class'
+    }
+    destinationDirectory = file('build/libs/') // 输出目录
 }
 
-task makeJar(type:Jar){
-    from zipTree(zipFile)
-    from fileTree(dir:'src/main',includes:['assets/**']) //将assets目录打入jar包
-    baseName = _BASENAME + _VERSION
-    destinationDir = file(_DestinationPath)
-}
-
-makeJar.dependsOn(deleteBuild, build)
+// 确保任务在编译后执行
+makeJar.dependsOn(build)
 
 //添加
-publish {
-    userOrg = 'shed'
-    groupId = 'com.kgd.tools'
-    artifactId = 'ZLog'
-    publishVersion = '1.0.7'
-    desc = 'this is a android log tools'
-    website = 'https://github.com/wuzhenzhen/ZLog'
-}
+//publish {
+//    userOrg = 'shed'
+//    groupId = 'com.kgd.tools'
+//    artifactId = 'ZLog'
+//    publishVersion = '1.0.7'
+//    desc = 'this is a android log tools'
+//    website = 'https://github.com/wuzhenzhen/ZLog'
+//}

@@ -111,7 +111,8 @@ public class FsService extends Service implements Runnable {
         App.initContext(context);
         Intent serviceIntent = new Intent(context, FsService.class);
         if (!FsService.isRunning()) {
-            ContextCompat.startForegroundService(context, serviceIntent);
+//            ContextCompat.startForegroundService(context, serviceIntent);
+            context.startService(serviceIntent);
         }
     }
 
@@ -123,7 +124,8 @@ public class FsService extends Service implements Runnable {
         mFtpListener = listener;
         Intent serviceIntent = new Intent(context, FsService.class);
         if (!FsService.isRunning()) {
-            ContextCompat.startForegroundService(context, serviceIntent);
+//            ContextCompat.startForegroundService(context, serviceIntent);
+            context.startService(serviceIntent);
         }
     }
 
